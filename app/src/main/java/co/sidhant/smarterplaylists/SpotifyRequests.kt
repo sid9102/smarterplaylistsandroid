@@ -4,6 +4,7 @@ import com.beust.klaxon.*
 import khttp.get
 import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.debug
 import org.jetbrains.anko.info
 import java.util.Map
 
@@ -30,12 +31,23 @@ class SpotifyRequests (authToken: String, clientID: String): AnkoLogger
 
     fun getPlaylists(playlists: ArrayList<SpotifyEntity>)
     {
-        // TODO: get all playlists
-        val r = get(BASE_URL + "v1/me/playlists", headers = mapOf("Authorization" to "Bearer " + mAuthToken))
-        val playlistJson = parse(r.text) as JsonObject
-        playlistJson.array<JsonObject>("items")!!.mapTo(playlists)
+        var r = get(BASE_URL + "v1/me/playlists", headers = mapOf("Authorization" to "Bearer " + mAuthToken))
+        // Spotify only gives us 20 playlists by default we want to get the maximum 150
+        val limitRegex = Regex("limit=\\d+")
+        val offsetRegex = Regex("offset=\\d+")
+        var newURL = (parse(r.text) as JsonObject).string("href") as String
+        newURL = limitRegex.replace(newURL, "limit=50")
+        for(i in 0..2)
         {
-            SpotifyEntity(it.string("name") as String, it.string("id") as String)
+            val curOffset = i * 50
+            newURL = offsetRegex.replace(newURL, "offset=" + curOffset.toString())
+            debug("Getting playlists from URL: " + newURL)
+            r = get(newURL, headers = mapOf("Authorization" to "Bearer " + mAuthToken))
+            val playlistJson = parse(r.text) as JsonObject
+            playlistJson.array<JsonObject>("items")!!.mapTo(playlists)
+            {
+                SpotifyEntity(it.string("name") as String, it.string("uri") as String)
+            }
         }
     }
 }

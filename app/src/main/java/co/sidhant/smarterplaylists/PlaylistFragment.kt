@@ -72,8 +72,11 @@ class PlaylistFragment : Fragment()
             doAsync()
             {
                 val requests = SpotifyRequests(mAuthToken, mClientID)
-                val r = requests.getPlaylists(playlists)
-                adapter.notifyDataSetChanged()
+                requests.getPlaylists(playlists)
+                uiThread()
+                {
+                    adapter.notifyDataSetChanged()
+                }
             }
         }
         return view

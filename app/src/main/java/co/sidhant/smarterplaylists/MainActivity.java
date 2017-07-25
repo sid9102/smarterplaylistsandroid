@@ -6,6 +6,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.spotify.sdk.android.authentication.AuthenticationClient;
@@ -18,8 +19,6 @@ import com.spotify.sdk.android.player.Player;
 import com.spotify.sdk.android.player.PlayerEvent;
 import com.spotify.sdk.android.player.Spotify;
 import com.spotify.sdk.android.player.SpotifyPlayer;
-
-import co.sidhant.smarterplaylists.dummy.DummyContent;
 
 public class MainActivity extends Activity implements
         SpotifyPlayer.NotificationCallback, ConnectionStateCallback, PlaylistFragment.OnListFragmentInteractionListener
@@ -147,7 +146,8 @@ public class MainActivity extends Activity implements
     }
 
     @Override
-    public void onPlaylistInteraction(SpotifyRequests.SpotifyEntity item) {
-
+    public void onPlaylistInteraction(@NonNull SpotifyRequests.SpotifyEntity item)
+    {
+        mPlayer.playUri(null, item.getUri(), 0, 0);
     }
 }
