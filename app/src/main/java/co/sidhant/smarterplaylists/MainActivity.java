@@ -1,8 +1,11 @@
 package co.sidhant.smarterplaylists;
 
 import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.app.Fragment;
 import android.util.Log;
 
 import com.spotify.sdk.android.authentication.AuthenticationClient;
@@ -16,14 +19,19 @@ import com.spotify.sdk.android.player.PlayerEvent;
 import com.spotify.sdk.android.player.Spotify;
 import com.spotify.sdk.android.player.SpotifyPlayer;
 
+import co.sidhant.smarterplaylists.dummy.DummyContent;
+
 public class MainActivity extends Activity implements
-        SpotifyPlayer.NotificationCallback, ConnectionStateCallback
+        SpotifyPlayer.NotificationCallback, ConnectionStateCallback, PlaylistFragment.OnListFragmentInteractionListener
 {
 
     // TODO: Replace with your client ID
     private static final String CLIENT_ID = "ee7a464c2dc4410e972b78568ddde051";
     // TODO: Replace with your redirect URI
     private static final String REDIRECT_URI = "sidhant://sidhant.co/spotify/";
+
+    private static final String ARG_AUTH_TOKEN = "auth-token";
+    private static final String ARG_CLIENT_ID = "client-id";
 
     private Player mPlayer;
 
@@ -67,6 +75,16 @@ public class MainActivity extends Activity implements
                         Log.e("MainActivity", "Could not initialize player: " + throwable.getMessage());
                     }
                 });
+
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                Bundle args = new Bundle();
+                args.putString(ARG_AUTH_TOKEN, response.getAccessToken());
+                args.putString(ARG_CLIENT_ID, CLIENT_ID);
+                Fragment playlistFragment = new PlaylistFragment();
+                playlistFragment.setArguments(args);
+                fragmentTransaction.add(R.id.mainContainer, playlistFragment);
+                fragmentTransaction.commit();
             }
         }
     }
@@ -101,7 +119,7 @@ public class MainActivity extends Activity implements
     public void onLoggedIn() {
         Log.d("MainActivity", "User logged in");
 
-        mPlayer.playUri(null, "spotify:track:2TpxZ7JUBn3uw46aR7qd6V", 0, 0);
+//        mPlayer.playUri(null, "spotify:track:2TpxZ7JUBn3uw46aR7qd6V", 0, 0);
     }
 
     @Override
@@ -126,5 +144,10 @@ public class MainActivity extends Activity implements
     @Override
     public void onConnectionMessage(String message) {
         Log.d("MainActivity", "Received connection message: " + message);
+    }
+
+    @Override
+    public void onPlaylistInteraction(SpotifyRequests.SpotifyEntity item) {
+
     }
 }

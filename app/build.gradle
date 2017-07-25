@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 26
@@ -21,6 +22,9 @@ android {
 
 repositories {
     jcenter()
+    maven {
+        url "https://jitpack.io"
+    }
     flatDir {
         dirs 'libs'
     }
@@ -32,13 +36,15 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    // This library handles authentication and authorization
+    compile 'com.github.jkcclemens:khttp:0.1.0'
+    compile 'com.beust:klaxon:0.30'
+    compile 'org.jetbrains.anko:anko:0.10.1'
     compile 'com.spotify.sdk:spotify-android-auth:1.0.0@aar'
-
-    // This library handles music playback
     compile 'com.spotify.sdk:spotify-player:24-noconnect-2.20b@aar'
-
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support:support-v4:26.+'
+    compile 'com.android.support:recyclerview-v7:26.+'
     testCompile 'junit:junit:4.12'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
