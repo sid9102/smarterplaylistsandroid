@@ -32,7 +32,7 @@ class SpotifyRequests (authToken: String, clientID: String): AnkoLogger
     fun getPlaylists(playlists: ArrayList<SpotifyEntity>)
     {
         var r = get(BASE_URL + "v1/me/playlists", headers = mapOf("Authorization" to "Bearer " + mAuthToken))
-        // Spotify only gives us 20 playlists by default we want to get the maximum 150
+        // Spotify only gives us 20 playlists by default, we want to get the maximum 150
         val limitRegex = Regex("limit=\\d+")
         val offsetRegex = Regex("offset=\\d+")
         var newURL = (parse(r.text) as JsonObject).string("href") as String

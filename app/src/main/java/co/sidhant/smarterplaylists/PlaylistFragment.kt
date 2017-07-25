@@ -2,7 +2,7 @@ package co.sidhant.smarterplaylists
 
 import android.content.Context
 import android.os.Bundle
-import android.app.Fragment
+import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 
 
-import org.jetbrains.anko.bundleOf
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
