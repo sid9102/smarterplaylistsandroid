@@ -55,11 +55,8 @@ class SpotifyRequests (authToken: String): AnkoLogger
         val parts = uri.split(":")
         val url = BASE_URL + "v1/users/" + parts[2] + "/playlists/" + parts[4]
         val r = getWithAuth(url)
-        val playlist = (parse(r.text) as JsonObject).array<JsonObject>("tracks")
-        for(track in playlist!!)
-        {
-            result.add(SpotifyEntity(track.string("name") as String, track.string("uri") as String))
-        }
+        val playlist = (parse(r.text) as JsonObject).obj("tracks")!!.array<JsonObject>("items")
+        playlist!!.mapTo(result) { SpotifyEntity(it.obj("track")!!.string("name") as String, it.obj("track")!!.string("uri") as String) }
         return result
     }
 

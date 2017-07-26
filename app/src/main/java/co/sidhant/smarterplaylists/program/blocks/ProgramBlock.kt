@@ -10,8 +10,7 @@ interface ProgramBlock
 {
     var name : String
     val hasInput : Boolean
-    val requests : SpotifyRequests
 
-    fun output() : ArrayList<SpotifyRequests.SpotifyEntity>
+    fun output(requests: SpotifyRequests) : ArrayList<SpotifyRequests.SpotifyEntity>
     fun input(input: java.util.ArrayList<SpotifyRequests.SpotifyEntity>?){}
 }

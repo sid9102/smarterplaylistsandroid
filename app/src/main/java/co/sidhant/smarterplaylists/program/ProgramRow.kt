@@ -7,7 +7,7 @@ import co.sidhant.smarterplaylists.program.blocks.ProgramBlock
  * Represents one row in the program view
  * Created by sid on 7/25/17.
  */
-class ProgramRow
+class ProgramRow(var isLastRow: Boolean)
 {
     val blocks: ArrayList<ProgramBlock> = ArrayList()
     // Key is the index of the block (in the next row) to output to, value is a set of banned blocks
@@ -78,7 +78,7 @@ class ProgramRow
      * Creates a list of outputs, where key is the index of the block in
      * the next row to output to, and value is the list of songs to output.
      */
-    fun output() : HashMap<Int, ArrayList<SpotifyRequests.SpotifyEntity>>
+    fun output(requests: SpotifyRequests) : HashMap<Int, ArrayList<SpotifyRequests.SpotifyEntity>>
     {
         val result = HashMap<Int, ArrayList<SpotifyRequests.SpotifyEntity>>()
         // Get all recommended tracks from input blocks
@@ -87,18 +87,28 @@ class ProgramRow
             val curResults = ArrayList<SpotifyRequests.SpotifyEntity>()
             for(i in outputs[index]!!)
             {
-                curResults.addAll(blocks[i].output())
+                curResults.addAll(blocks[i].output(requests))
             }
             val curBanned = HashSet<SpotifyRequests.SpotifyEntity>()
             if(bannedOutputs[index] != null)
             {
                 for(i in bannedOutputs[index]!!)
                 {
-                    curBanned.addAll(blocks[i].output())
+                    curBanned.addAll(blocks[i].output(requests))
                 }
                 curResults.filter { entity -> !curBanned.contains(entity) }
             }
             result[index] = curResults
+        }
+        // If this is the last row all its blocks need to output to 0
+        if (this.isLastRow)
+        {
+            val curResults = ArrayList<SpotifyRequests.SpotifyEntity>()
+            for(block in blocks)
+            {
+                curResults.addAll(block.output(requests))
+            }
+            result[0] = curResults
         }
         return result
     }

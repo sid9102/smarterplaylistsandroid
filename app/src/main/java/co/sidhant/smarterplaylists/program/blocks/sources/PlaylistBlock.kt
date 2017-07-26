@@ -7,9 +7,9 @@ import co.sidhant.smarterplaylists.program.blocks.ProgramBlock
  * Playlist Source Block
  * Created by sid on 7/26/17.
  */
-class PlaylistBlock(var uri: String, override val requests: SpotifyRequests) : ProgramBlock
+class PlaylistBlock(playlist: SpotifyRequests.SpotifyEntity) : ProgramBlock
 {
-    override var name: String = requests.getName(uri)
+    override var name: String = playlist.name
         get() = field
         set(value)
         {
@@ -18,9 +18,16 @@ class PlaylistBlock(var uri: String, override val requests: SpotifyRequests) : P
     override val hasInput: Boolean = false
         get() = field
 
-    override fun output(): ArrayList<SpotifyRequests.SpotifyEntity>
-    {
-        return requests.getPlaylistTracks(uri)
-    }
+    var playlist: SpotifyRequests.SpotifyEntity = playlist
+        get() = field
+        set(value)
+        {
+            field = value
+            this.name = value.name
+        }
 
+    override fun output(requests: SpotifyRequests): ArrayList<SpotifyRequests.SpotifyEntity>
+    {
+        return requests.getPlaylistTracks(playlist.uri)
+    }
 }

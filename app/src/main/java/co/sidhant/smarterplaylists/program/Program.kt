@@ -1,6 +1,7 @@
 package co.sidhant.smarterplaylists.program
 
 import co.sidhant.smarterplaylists.SpotifyRequests
+import co.sidhant.smarterplaylists.program.blocks.ProgramBlock
 import com.google.gson.Gson
 
 /**
@@ -9,9 +10,20 @@ import com.google.gson.Gson
  */
 
 
-class Program(name: String)
+class Program(var name: String)
 {
     val rows : ArrayList<ProgramRow> = ArrayList()
+
+    fun addRow()
+    {
+        rows[rows.size - 1].isLastRow = false
+        rows.add(ProgramRow(true))
+    }
+    fun addBlock(block: ProgramBlock, rowIndex: Int)
+    {
+        if (rows.size > rowIndex)
+            rows[rowIndex].addBlock(block)
+    }
 
     /**
      * Connect one block to another.
@@ -25,7 +37,7 @@ class Program(name: String)
      *
      * @return true if this is a legal operation, false if not
      */
-    fun connectBlocks(toRowIndex: Int, fromBlockIndex: Int, toBlockIndex: Int, banned: Boolean) : Boolean
+    fun connectBlocks(toRowIndex: Int, fromBlockIndex: Int, toBlockIndex: Int, banned: Boolean = false) : Boolean
     {
         if (rows[toRowIndex].blocks[toBlockIndex].hasInput)
         {
@@ -37,20 +49,27 @@ class Program(name: String)
         return false
     }
 
-    fun runProgram()
+    fun runProgram(requests: SpotifyRequests): ArrayList<SpotifyRequests.SpotifyEntity>?
     {
         var curOutput = HashMap<Int, ArrayList<SpotifyRequests.SpotifyEntity>>()
         for (row in rows)
         {
             row.input(curOutput)
-            curOutput = row.output()
+            curOutput = row.output(requests)
         }
         val result = curOutput[0]
+        return result
     }
 
     fun toJSON() : String
     {
         val gson = Gson()
-        return gson.toJson(this)
+        return gson.toJson(this).toString()
+    }
+
+    init
+    {
+        val firstRow = ProgramRow(true)
+        rows.add(firstRow)
     }
 }
