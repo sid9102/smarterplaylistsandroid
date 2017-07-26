@@ -4,9 +4,7 @@ import com.beust.klaxon.*
 import khttp.get
 import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.debug
 import org.jetbrains.anko.info
-import java.util.Map
 
 /**
  * Created by sid on 7/24/17.
@@ -41,7 +39,7 @@ class SpotifyRequests (authToken: String, clientID: String): AnkoLogger
         {
             val curOffset = i * 50
             newURL = offsetRegex.replace(newURL, "offset=" + curOffset.toString())
-            debug("Getting playlists from URL: " + newURL)
+            info("Getting playlists from URL: " + newURL)
             r = get(newURL, headers = mapOf("Authorization" to "Bearer " + mAuthToken))
             val playlistJson = parse(r.text) as JsonObject
             playlistJson.array<JsonObject>("items")!!.mapTo(playlists)

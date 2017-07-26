@@ -1,4 +1,4 @@
-package co.sidhant.smarterplaylists
+package co.sidhant.smarterplaylists.fragments
 
 import android.content.Context
 import android.os.Bundle
@@ -8,6 +8,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import co.sidhant.smarterplaylists.R
+import co.sidhant.smarterplaylists.SpotifyRequests
 
 
 import org.jetbrains.anko.doAsync

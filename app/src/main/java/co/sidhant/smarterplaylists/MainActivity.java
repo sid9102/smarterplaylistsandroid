@@ -20,6 +20,8 @@ import com.spotify.sdk.android.player.PlayerEvent;
 import com.spotify.sdk.android.player.Spotify;
 import com.spotify.sdk.android.player.SpotifyPlayer;
 
+import co.sidhant.smarterplaylists.fragments.PlaylistFragment;
+
 public class MainActivity extends AppCompatActivity implements
         SpotifyPlayer.NotificationCallback, ConnectionStateCallback, PlaylistFragment.OnListFragmentInteractionListener
 {

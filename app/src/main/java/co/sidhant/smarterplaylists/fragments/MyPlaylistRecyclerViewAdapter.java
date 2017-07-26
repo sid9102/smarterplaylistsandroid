@@ -1,4 +1,4 @@
-package co.sidhant.smarterplaylists;
+package co.sidhant.smarterplaylists.fragments;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,7 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import co.sidhant.smarterplaylists.PlaylistFragment.OnListFragmentInteractionListener;
+import co.sidhant.smarterplaylists.R;
+import co.sidhant.smarterplaylists.SpotifyRequests;
+import co.sidhant.smarterplaylists.fragments.PlaylistFragment.OnListFragmentInteractionListener;
 
 import java.util.List;
 
