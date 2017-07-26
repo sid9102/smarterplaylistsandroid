@@ -20,15 +20,14 @@ import com.spotify.sdk.android.player.PlayerEvent;
 import com.spotify.sdk.android.player.Spotify;
 import com.spotify.sdk.android.player.SpotifyPlayer;
 
+
 import co.sidhant.smarterplaylists.fragments.PlaylistFragment;
 
 public class MainActivity extends AppCompatActivity implements
         SpotifyPlayer.NotificationCallback, ConnectionStateCallback, PlaylistFragment.OnListFragmentInteractionListener
 {
 
-    // TODO: Replace with your client ID
     private static final String CLIENT_ID = "ee7a464c2dc4410e972b78568ddde051";
-    // TODO: Replace with your redirect URI
     private static final String REDIRECT_URI = "sidhant://sidhant.co/spotify/";
 
     private static final String ARG_AUTH_TOKEN = "auth-token";

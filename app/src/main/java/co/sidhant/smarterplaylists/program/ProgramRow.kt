@@ -47,7 +47,7 @@ class ProgramRow
         val curBanned = bannedOutputs[outputIndex]
         if (curBanned != null)
         {
-            // We can't add to banned output if this is also a regular output
+            // We can't add to output if this is also a banned output
             if(curBanned.contains(index))
                 return false
         }

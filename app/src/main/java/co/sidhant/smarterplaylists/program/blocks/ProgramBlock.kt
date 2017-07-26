@@ -8,10 +8,10 @@ import co.sidhant.smarterplaylists.SpotifyRequests
  */
 interface ProgramBlock
 {
-    var uri : String
     var name : String
     val hasInput : Boolean
+    val requests : SpotifyRequests
 
     fun output() : ArrayList<SpotifyRequests.SpotifyEntity>
-    fun input(input: java.util.ArrayList<SpotifyRequests.SpotifyEntity>?)
+    fun input(input: java.util.ArrayList<SpotifyRequests.SpotifyEntity>?){}
 }

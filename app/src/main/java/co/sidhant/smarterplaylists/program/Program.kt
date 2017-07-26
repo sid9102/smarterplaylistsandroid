@@ -1,13 +1,13 @@
 package co.sidhant.smarterplaylists.program
 
 import co.sidhant.smarterplaylists.SpotifyRequests
+import com.google.gson.Gson
 
 /**
  * Program class
  * Created by sid on 7/25/17.
  */
 
-import org.jetbrains.anko.toast
 
 class Program(name: String)
 {
@@ -48,4 +48,9 @@ class Program(name: String)
         val result = curOutput[0]
     }
 
+    fun toJSON() : String
+    {
+        val gson = Gson()
+        return gson.toJson(this)
+    }
 }
