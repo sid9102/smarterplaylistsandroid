@@ -2,11 +2,10 @@ package co.sidhant.smarterplaylists.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import android.app.Fragment
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -69,7 +68,6 @@ class SongFragment : Fragment()
                               savedInstanceState: Bundle?): View?
     {
         val view = inflater!!.inflate(R.layout.fragment_song_list, container, false)
-
         // Set the adapter
         if (view is RecyclerView)
         {

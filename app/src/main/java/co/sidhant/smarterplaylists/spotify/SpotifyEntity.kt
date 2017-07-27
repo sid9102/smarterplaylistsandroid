@@ -35,10 +35,6 @@ class SpotifySong(@Transient override var name: String, @Transient override var 
 
             val songs = ArrayList<SpotifySong>()
             parse(json).mapTo(songs) { SpotifySong(it.string("name") as String, it.string("uri") as String, it.string("artist") as String) }
-            for (song in songs)
-            {
-                Log.i("SONG", song.name + " - " + song.artist)
-            }
             return songs
         }
     }

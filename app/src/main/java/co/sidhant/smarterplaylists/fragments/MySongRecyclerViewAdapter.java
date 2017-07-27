@@ -36,8 +36,9 @@ public class MySongRecyclerViewAdapter extends RecyclerView.Adapter<MySongRecycl
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mSong = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getName());
-        holder.mContentView.setText(mValues.get(position).getArtist());
+
+        holder.mSongNameView.setText(mValues.get(position).getName());
+        holder.mArtistView.setText(mValues.get(position).getArtist());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,20 +59,20 @@ public class MySongRecyclerViewAdapter extends RecyclerView.Adapter<MySongRecycl
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
+        public final TextView mSongNameView;
+        public final TextView mArtistView;
         public SpotifySong mSong;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            mSongNameView = (TextView) view.findViewById(R.id.name);
+            mArtistView = (TextView) view.findViewById(R.id.artist);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString() + " '" + mArtistView.getText() + "'";
         }
     }
 }

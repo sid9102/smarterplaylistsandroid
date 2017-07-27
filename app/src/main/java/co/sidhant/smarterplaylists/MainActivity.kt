@@ -1,8 +1,8 @@
 package co.sidhant.smarterplaylists
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
 
 import com.spotify.sdk.android.authentication.AuthenticationClient
@@ -26,7 +26,7 @@ import co.sidhant.smarterplaylists.spotify.SpotifyRequests
 import co.sidhant.smarterplaylists.spotify.SpotifySong
 import org.jetbrains.anko.doAsync
 
-class MainActivity : AppCompatActivity(), Player.NotificationCallback, ConnectionStateCallback, PlaylistFragment.OnListFragmentInteractionListener, SongFragment.OnListFragmentInteractionListener
+class MainActivity : Activity(), Player.NotificationCallback, ConnectionStateCallback, PlaylistFragment.OnListFragmentInteractionListener, SongFragment.OnListFragmentInteractionListener
 {
 
     private var mPlayer: Player? = null
@@ -54,7 +54,6 @@ class MainActivity : AppCompatActivity(), Player.NotificationCallback, Connectio
         {
             var songs = ArrayList<SpotifySong>()
             val response = AuthenticationClient.getResponse(resultCode, intent)
-            val fragmentManager = supportFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
             val args = Bundle()
             args.putString(ARG_AUTH_TOKEN, response.accessToken)
@@ -69,7 +68,6 @@ class MainActivity : AppCompatActivity(), Player.NotificationCallback, Connectio
                 {
                     val songFragment = SongFragment()
                     songFragment.arguments = args
-                    Log.i("WHAT", args.getString(ARG_SONGS_JSON))
                     fragmentTransaction.add(R.id.mainContainer, songFragment)
                     fragmentTransaction.commit()
                 }
