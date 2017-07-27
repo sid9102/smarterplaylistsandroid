@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="text_margin">16dp</dimen>
+    <item name="disabled_alpha_material_dark" type="dimen" format="float">0.30</item>
+    <item name="primary_text_light" type="dimen" format="float">0.26</item>
 </resources>
