@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -74,7 +75,7 @@ class SongFragment : Fragment()
         {
             val context = view.getContext()
             val recyclerView = view
-            recyclerView.layoutManager = GridLayoutManager(context, 2)
+            recyclerView.layoutManager = LinearLayoutManager(context)
             recyclerView.adapter = MySongRecyclerViewAdapter(songs, mListener)
         }
         return view
@@ -110,7 +111,6 @@ class SongFragment : Fragment()
      */
     interface OnListFragmentInteractionListener
     {
-        // TODO: Update argument type and name
-        fun onListFragmentInteraction(item: SpotifySong)
+        fun onSongInteraction(item: SpotifySong)
     }
 }

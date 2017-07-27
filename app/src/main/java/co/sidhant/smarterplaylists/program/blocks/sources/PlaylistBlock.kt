@@ -3,6 +3,7 @@ package co.sidhant.smarterplaylists.program.blocks.sources
 import co.sidhant.smarterplaylists.spotify.SpotifyRequests
 import co.sidhant.smarterplaylists.program.blocks.ProgramBlock
 import co.sidhant.smarterplaylists.spotify.SpotifyEntity
+import co.sidhant.smarterplaylists.spotify.SpotifySong
 
 /**
  * Playlist Source Block
@@ -27,7 +28,7 @@ class PlaylistBlock(playlist: SpotifyEntity) : ProgramBlock
             this.name = value.name
         }
 
-    override fun output(requests: SpotifyRequests): ArrayList<SpotifyEntity>
+    override fun output(requests: SpotifyRequests): ArrayList<SpotifySong>
     {
         return requests.getPlaylistTracks(playlist.uri)
     }

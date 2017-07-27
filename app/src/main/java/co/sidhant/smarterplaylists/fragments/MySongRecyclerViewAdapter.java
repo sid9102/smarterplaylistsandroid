@@ -45,7 +45,7 @@ public class MySongRecyclerViewAdapter extends RecyclerView.Adapter<MySongRecycl
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mSong);
+                    mListener.onSongInteraction(holder.mSong);
                 }
             }
         });

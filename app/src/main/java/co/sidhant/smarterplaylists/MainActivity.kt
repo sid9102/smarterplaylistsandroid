@@ -18,9 +18,15 @@ import com.spotify.sdk.android.player.SpotifyPlayer
 
 
 import co.sidhant.smarterplaylists.fragments.PlaylistFragment
+import co.sidhant.smarterplaylists.fragments.SongFragment
+import co.sidhant.smarterplaylists.program.Program
+import co.sidhant.smarterplaylists.program.blocks.sources.PlaylistBlock
 import co.sidhant.smarterplaylists.spotify.SpotifyEntity
+import co.sidhant.smarterplaylists.spotify.SpotifyRequests
+import co.sidhant.smarterplaylists.spotify.SpotifySong
+import org.jetbrains.anko.doAsync
 
-class MainActivity : AppCompatActivity(), Player.NotificationCallback, ConnectionStateCallback, PlaylistFragment.OnListFragmentInteractionListener
+class MainActivity : AppCompatActivity(), Player.NotificationCallback, ConnectionStateCallback, PlaylistFragment.OnListFragmentInteractionListener, SongFragment.OnListFragmentInteractionListener
 {
 
     private var mPlayer: Player? = null
@@ -46,7 +52,28 @@ class MainActivity : AppCompatActivity(), Player.NotificationCallback, Connectio
         // Check if result comes from the correct activity
         if (requestCode == REQUEST_CODE)
         {
+            var songs = ArrayList<SpotifySong>()
             val response = AuthenticationClient.getResponse(resultCode, intent)
+            val fragmentManager = supportFragmentManager
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            val args = Bundle()
+            args.putString(ARG_AUTH_TOKEN, response.accessToken)
+            args.putString(ARG_CLIENT_ID, CLIENT_ID)
+            doAsync()
+            {
+                val program = Program("what")
+                program.addBlock(PlaylistBlock(SpotifyEntity("Twin Peaks", "spotify:user:johnnyjewelspotify:playlist:1CAvNa3OMDeoQX1vhl4jxZ")), 0)
+                songs = program.runProgram(SpotifyRequests(response.accessToken)) as ArrayList<SpotifySong>
+                args.putString(ARG_SONGS_JSON, SpotifySong.dumpSongsToJson(songs))
+                runOnUiThread()
+                {
+                    val songFragment = SongFragment()
+                    songFragment.arguments = args
+                    Log.i("WHAT", args.getString(ARG_SONGS_JSON))
+                    fragmentTransaction.add(R.id.mainContainer, songFragment)
+                    fragmentTransaction.commit()
+                }
+            }
             if (response.type == AuthenticationResponse.Type.TOKEN)
             {
                 val playerConfig = Config(this, response.accessToken, CLIENT_ID)
@@ -64,16 +91,6 @@ class MainActivity : AppCompatActivity(), Player.NotificationCallback, Connectio
                         Log.e("MainActivity", "Could not initialize player: " + throwable.message)
                     }
                 })
-
-                val fragmentManager = supportFragmentManager
-                val fragmentTransaction = fragmentManager.beginTransaction()
-                val args = Bundle()
-                args.putString(ARG_AUTH_TOKEN, response.accessToken)
-                args.putString(ARG_CLIENT_ID, CLIENT_ID)
-                val playlistFragment = PlaylistFragment()
-                playlistFragment.arguments = args
-                fragmentTransaction.add(R.id.mainContainer, playlistFragment)
-                fragmentTransaction.commit()
             }
         }
     }
@@ -143,6 +160,11 @@ class MainActivity : AppCompatActivity(), Player.NotificationCallback, Connectio
         mPlayer!!.playUri(null, item.uri, 0, 0)
     }
 
+    override fun onSongInteraction(item: SpotifySong)
+    {
+        mPlayer!!.playUri(null, item.uri, 0, 0)
+    }
+
     companion object
     {
 
@@ -151,6 +173,7 @@ class MainActivity : AppCompatActivity(), Player.NotificationCallback, Connectio
 
         private val ARG_AUTH_TOKEN = "auth-token"
         private val ARG_CLIENT_ID = "client-id"
+        private val ARG_SONGS_JSON = "songs-json"
 
         // Request code that will be used to verify if the result comes from correct activity
         // Can be any integer

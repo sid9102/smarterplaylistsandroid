@@ -1,7 +1,7 @@
 package co.sidhant.smarterplaylists.program.blocks
 
-import co.sidhant.smarterplaylists.spotify.SpotifyEntity
 import co.sidhant.smarterplaylists.spotify.SpotifyRequests
+import co.sidhant.smarterplaylists.spotify.SpotifySong
 
 /**
  * Interface for ProgramBlocks
@@ -12,6 +12,6 @@ interface ProgramBlock
     var name : String
     val hasInput : Boolean
 
-    fun output(requests: SpotifyRequests) : ArrayList<SpotifyEntity>
-    fun input(input: java.util.ArrayList<SpotifyEntity>?){}
+    fun output(requests: SpotifyRequests) : ArrayList<SpotifySong>
+    fun input(input: java.util.ArrayList<SpotifySong>?){}
 }

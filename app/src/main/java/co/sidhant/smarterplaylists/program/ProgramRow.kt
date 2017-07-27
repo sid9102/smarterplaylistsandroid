@@ -2,7 +2,7 @@ package co.sidhant.smarterplaylists.program
 
 import co.sidhant.smarterplaylists.spotify.SpotifyRequests
 import co.sidhant.smarterplaylists.program.blocks.ProgramBlock
-import co.sidhant.smarterplaylists.spotify.SpotifyEntity
+import co.sidhant.smarterplaylists.spotify.SpotifySong
 
 /**
  * Represents one row in the program view
@@ -68,7 +68,7 @@ class ProgramRow(var isLastRow: Boolean)
     /**
      * Feed input to the blocks in this row
      */
-    fun input(input: HashMap<Int, ArrayList<SpotifyEntity>>)
+    fun input(input: HashMap<Int, ArrayList<SpotifySong>>)
     {
         for (index in input.keys)
         {
@@ -79,18 +79,18 @@ class ProgramRow(var isLastRow: Boolean)
      * Creates a list of outputs, where key is the index of the block in
      * the next row to output to, and value is the list of songs to output.
      */
-    fun output(requests: SpotifyRequests) : HashMap<Int, ArrayList<SpotifyEntity>>
+    fun output(requests: SpotifyRequests) : HashMap<Int, ArrayList<SpotifySong>>
     {
-        val result = HashMap<Int, ArrayList<SpotifyEntity>>()
+        val result = HashMap<Int, ArrayList<SpotifySong>>()
         // Get all recommended tracks from input blocks
         for (index in outputs.keys)
         {
-            val curResults = ArrayList<SpotifyEntity>()
+            val curResults = ArrayList<SpotifySong>()
             for(i in outputs[index]!!)
             {
                 curResults.addAll(blocks[i].output(requests))
             }
-            val curBanned = HashSet<SpotifyEntity>()
+            val curBanned = HashSet<SpotifySong>()
             if(bannedOutputs[index] != null)
             {
                 for(i in bannedOutputs[index]!!)
@@ -104,7 +104,7 @@ class ProgramRow(var isLastRow: Boolean)
         // If this is the last row all its blocks need to output to 0
         if (this.isLastRow)
         {
-            val curResults = ArrayList<SpotifyEntity>()
+            val curResults = ArrayList<SpotifySong>()
             for(block in blocks)
             {
                 curResults.addAll(block.output(requests))

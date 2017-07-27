@@ -47,7 +47,7 @@ class SpotifyRequests (authToken: String): AnkoLogger
         return result
     }
 
-    fun getPlaylistTracks(uri: String) : ArrayList<SpotifyEntity>
+    fun getPlaylistTracks(uri: String) : ArrayList<SpotifySong>
     {
         fun getArtistString(artists: JsonArray<JsonObject>) : String
         {
@@ -61,7 +61,7 @@ class SpotifyRequests (authToken: String): AnkoLogger
             return result.substring(0, result.length - 2)
         }
 
-        val result = ArrayList<SpotifyEntity>()
+        val result = ArrayList<SpotifySong>()
         val parts = uri.split(":")
         val url = BASE_URL + "v1/users/" + parts[2] + "/playlists/" + parts[4]
         val r = getWithAuth(url)
@@ -70,7 +70,7 @@ class SpotifyRequests (authToken: String): AnkoLogger
         {
             SpotifySong(it.obj("track")!!.string("name") as String,
                     it.obj("track")!!.string("uri") as String,
-                    getArtistString(it.array<JsonObject>("artists") as JsonArray<JsonObject>))
+                    getArtistString(it.obj("track")!!.array<JsonObject>("artists") as JsonArray<JsonObject>))
         }
         return result
     }
