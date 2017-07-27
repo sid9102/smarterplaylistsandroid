@@ -19,12 +19,8 @@ import com.spotify.sdk.android.player.SpotifyPlayer
 
 import co.sidhant.smarterplaylists.fragments.PlaylistFragment
 import co.sidhant.smarterplaylists.fragments.SongFragment
-import co.sidhant.smarterplaylists.program.Program
-import co.sidhant.smarterplaylists.program.blocks.sources.PlaylistBlock
 import co.sidhant.smarterplaylists.spotify.SpotifyEntity
-import co.sidhant.smarterplaylists.spotify.SpotifyRequests
 import co.sidhant.smarterplaylists.spotify.SpotifySong
-import org.jetbrains.anko.doAsync
 
 class MainActivity : Activity(), Player.NotificationCallback, ConnectionStateCallback, PlaylistFragment.OnListFragmentInteractionListener, SongFragment.OnListFragmentInteractionListener
 {
@@ -52,26 +48,17 @@ class MainActivity : Activity(), Player.NotificationCallback, ConnectionStateCal
         // Check if result comes from the correct activity
         if (requestCode == REQUEST_CODE)
         {
-            var songs = ArrayList<SpotifySong>()
             val response = AuthenticationClient.getResponse(resultCode, intent)
             val fragmentTransaction = fragmentManager.beginTransaction()
-            val args = Bundle()
-            args.putString(ARG_AUTH_TOKEN, response.accessToken)
-            args.putString(ARG_CLIENT_ID, CLIENT_ID)
-            doAsync()
+            val prev = fragmentManager.findFragmentByTag("dialog")
+            if (prev != null)
             {
-                val program = Program("what")
-                program.addBlock(PlaylistBlock(SpotifyEntity("Twin Peaks", "spotify:user:johnnyjewelspotify:playlist:1CAvNa3OMDeoQX1vhl4jxZ")), 0)
-                songs = program.runProgram(SpotifyRequests(response.accessToken)) as ArrayList<SpotifySong>
-                args.putString(ARG_SONGS_JSON, SpotifySong.dumpSongsToJson(songs))
-                runOnUiThread()
-                {
-                    val songFragment = SongFragment()
-                    songFragment.arguments = args
-                    fragmentTransaction.add(R.id.mainContainer, songFragment)
-                    fragmentTransaction.commit()
-                }
+                fragmentTransaction.remove(prev)
             }
+            fragmentTransaction.addToBackStack(null)
+            val newFragment = PlaylistFragment.newInstance(response.accessToken, CLIENT_ID)
+            newFragment.show(fragmentTransaction, "dialog")
+
             if (response.type == AuthenticationResponse.Type.TOKEN)
             {
                 val playerConfig = Config(this, response.accessToken, CLIENT_ID)
@@ -168,10 +155,6 @@ class MainActivity : Activity(), Player.NotificationCallback, ConnectionStateCal
 
         private val CLIENT_ID = "ee7a464c2dc4410e972b78568ddde051"
         private val REDIRECT_URI = "sidhant://sidhant.co/spotify/"
-
-        private val ARG_AUTH_TOKEN = "auth-token"
-        private val ARG_CLIENT_ID = "client-id"
-        private val ARG_SONGS_JSON = "songs-json"
 
         // Request code that will be used to verify if the result comes from correct activity
         // Can be any integer

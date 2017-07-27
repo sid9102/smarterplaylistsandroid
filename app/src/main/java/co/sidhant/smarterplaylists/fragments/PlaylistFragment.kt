@@ -1,8 +1,8 @@
 package co.sidhant.smarterplaylists.fragments
 
+import android.app.DialogFragment
 import android.content.Context
 import android.os.Bundle
-import android.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -23,7 +23,7 @@ import org.jetbrains.anko.uiThread
  * Activities containing this fragment MUST implement the [OnListFragmentInteractionListener]
  * interface.
  */
-class PlaylistFragment : Fragment()
+class PlaylistFragment : DialogFragment()
 {
     companion object
     {
@@ -55,11 +55,13 @@ class PlaylistFragment : Fragment()
             mAuthToken = arguments.getString(ARG_AUTH_TOKEN)
             mClientID = arguments.getString(ARG_CLIENT_ID)
         }
+        setStyle(DialogFragment.STYLE_NORMAL, this.theme)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View?
     {
+        dialog.setTitle("Select Playlist")
         val view = inflater!!.inflate(R.layout.fragment_playlist_list, container, false)
         val playlists = ArrayList<SpotifyEntity>()
         // Set the adapter
