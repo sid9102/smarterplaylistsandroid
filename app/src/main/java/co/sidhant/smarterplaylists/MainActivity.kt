@@ -18,10 +18,7 @@ import com.spotify.sdk.android.player.SpotifyPlayer
 
 
 import co.sidhant.smarterplaylists.fragments.PlaylistFragment
-import co.sidhant.smarterplaylists.program.Program
-import co.sidhant.smarterplaylists.program.blocks.sources.PlaylistBlock
-import com.google.gson.Gson
-import org.jetbrains.anko.doAsync
+import co.sidhant.smarterplaylists.spotify.SpotifyEntity
 
 class MainActivity : AppCompatActivity(), Player.NotificationCallback, ConnectionStateCallback, PlaylistFragment.OnListFragmentInteractionListener
 {
@@ -141,7 +138,7 @@ class MainActivity : AppCompatActivity(), Player.NotificationCallback, Connectio
         Log.d("MainActivity", "Received connection message: " + message)
     }
 
-    override fun onPlaylistInteraction(item: SpotifyRequests.SpotifyEntity)
+    override fun onPlaylistInteraction(item: SpotifyEntity)
     {
         mPlayer!!.playUri(null, item.uri, 0, 0)
     }

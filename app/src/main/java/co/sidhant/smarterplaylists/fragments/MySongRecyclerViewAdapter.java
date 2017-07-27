@@ -7,21 +7,21 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import co.sidhant.smarterplaylists.R;
-import co.sidhant.smarterplaylists.spotify.SpotifyEntity;
-import co.sidhant.smarterplaylists.fragments.PlaylistFragment.OnListFragmentInteractionListener;
+import co.sidhant.smarterplaylists.fragments.SongFragment.OnListFragmentInteractionListener;
+import co.sidhant.smarterplaylists.spotify.SpotifySong;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link SpotifyEntity} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link SpotifySong} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  */
-public class MyPlaylistRecyclerViewAdapter extends RecyclerView.Adapter<MyPlaylistRecyclerViewAdapter.ViewHolder> {
+public class MySongRecyclerViewAdapter extends RecyclerView.Adapter<MySongRecyclerViewAdapter.ViewHolder> {
 
-    private final List<            SpotifyEntity> mValues;
+    private final List<SpotifySong> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyPlaylistRecyclerViewAdapter(List<SpotifyEntity> items, OnListFragmentInteractionListener listener) {
+    public MySongRecyclerViewAdapter(List<SpotifySong> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -29,14 +29,15 @@ public class MyPlaylistRecyclerViewAdapter extends RecyclerView.Adapter<MyPlayli
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_playlist, parent, false);
+                .inflate(R.layout.fragment_song, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mContentView.setText(mValues.get(position).getName());
+        holder.mSong = mValues.get(position);
+        holder.mIdView.setText(mValues.get(position).getName());
+        holder.mContentView.setText(mValues.get(position).getArtist());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,7 +45,7 @@ public class MyPlaylistRecyclerViewAdapter extends RecyclerView.Adapter<MyPlayli
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onPlaylistInteraction(holder.mItem);
+                    mListener.onListFragmentInteraction(holder.mSong);
                 }
             }
         });
@@ -57,12 +58,14 @@ public class MyPlaylistRecyclerViewAdapter extends RecyclerView.Adapter<MyPlayli
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
+        public final TextView mIdView;
         public final TextView mContentView;
-        public SpotifyEntity mItem;
+        public SpotifySong mSong;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
+            mIdView = (TextView) view.findViewById(R.id.id);
             mContentView = (TextView) view.findViewById(R.id.content);
         }
 

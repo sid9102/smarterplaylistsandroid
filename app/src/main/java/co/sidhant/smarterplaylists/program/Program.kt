@@ -1,7 +1,8 @@
 package co.sidhant.smarterplaylists.program
 
-import co.sidhant.smarterplaylists.SpotifyRequests
+import co.sidhant.smarterplaylists.spotify.SpotifyRequests
 import co.sidhant.smarterplaylists.program.blocks.ProgramBlock
+import co.sidhant.smarterplaylists.spotify.SpotifyEntity
 import com.google.gson.Gson
 
 /**
@@ -49,9 +50,9 @@ class Program(var name: String)
         return false
     }
 
-    fun runProgram(requests: SpotifyRequests): ArrayList<SpotifyRequests.SpotifyEntity>?
+    fun runProgram(requests: SpotifyRequests): ArrayList<SpotifyEntity>?
     {
-        var curOutput = HashMap<Int, ArrayList<SpotifyRequests.SpotifyEntity>>()
+        var curOutput = HashMap<Int, ArrayList<SpotifyEntity>>()
         for (row in rows)
         {
             row.input(curOutput)

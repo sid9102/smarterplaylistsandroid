@@ -1,4 +1,4 @@
-package co.sidhant.smarterplaylists
+package co.sidhant.smarterplaylists.spotify
 
 import com.beust.klaxon.*
 import khttp.responses.Response
@@ -18,14 +18,12 @@ class SpotifyRequests (authToken: String): AnkoLogger
         const val BASE_URL: String = "https://api.spotify.com/"
     }
 
-    data class SpotifyEntity(val name: String, val uri: String)
-
     fun getWithAuth(url: String) : Response
     {
         return httpGet(url, headers = mapOf("Authorization" to "Bearer " + mAuthToken))
     }
 
-    fun parse(body: String) : Any?
+    private fun parse(body: String) : Any?
     {
         val parser: Parser = Parser()
         val stringBuilder: StringBuilder = StringBuilder(body)
@@ -49,14 +47,31 @@ class SpotifyRequests (authToken: String): AnkoLogger
         return result
     }
 
-    fun getPlaylistTracks(uri: String) : ArrayList<SpotifyRequests.SpotifyEntity>
+    fun getPlaylistTracks(uri: String) : ArrayList<SpotifyEntity>
     {
+        fun getArtistString(artists: JsonArray<JsonObject>) : String
+        {
+            if (artists.size == 1)
+                return artists[0].string("name") as String
+            var result = ""
+            for (artist in artists)
+            {
+                result += artist.string("name") + ", "
+            }
+            return result.substring(0, result.length - 2)
+        }
+
         val result = ArrayList<SpotifyEntity>()
         val parts = uri.split(":")
         val url = BASE_URL + "v1/users/" + parts[2] + "/playlists/" + parts[4]
         val r = getWithAuth(url)
         val playlist = (parse(r.text) as JsonObject).obj("tracks")!!.array<JsonObject>("items")
-        playlist!!.mapTo(result) { SpotifyEntity(it.obj("track")!!.string("name") as String, it.obj("track")!!.string("uri") as String) }
+        playlist!!.mapTo(result)
+        {
+            SpotifySong(it.obj("track")!!.string("name") as String,
+                    it.obj("track")!!.string("uri") as String,
+                    getArtistString(it.array<JsonObject>("artists") as JsonArray<JsonObject>))
+        }
         return result
     }
 

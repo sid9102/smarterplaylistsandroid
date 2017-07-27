@@ -1,7 +1,8 @@
 package co.sidhant.smarterplaylists.program
 
-import co.sidhant.smarterplaylists.SpotifyRequests
+import co.sidhant.smarterplaylists.spotify.SpotifyRequests
 import co.sidhant.smarterplaylists.program.blocks.ProgramBlock
+import co.sidhant.smarterplaylists.spotify.SpotifyEntity
 
 /**
  * Represents one row in the program view
@@ -67,7 +68,7 @@ class ProgramRow(var isLastRow: Boolean)
     /**
      * Feed input to the blocks in this row
      */
-    fun input(input: HashMap<Int, ArrayList<SpotifyRequests.SpotifyEntity>>)
+    fun input(input: HashMap<Int, ArrayList<SpotifyEntity>>)
     {
         for (index in input.keys)
         {
@@ -78,18 +79,18 @@ class ProgramRow(var isLastRow: Boolean)
      * Creates a list of outputs, where key is the index of the block in
      * the next row to output to, and value is the list of songs to output.
      */
-    fun output(requests: SpotifyRequests) : HashMap<Int, ArrayList<SpotifyRequests.SpotifyEntity>>
+    fun output(requests: SpotifyRequests) : HashMap<Int, ArrayList<SpotifyEntity>>
     {
-        val result = HashMap<Int, ArrayList<SpotifyRequests.SpotifyEntity>>()
+        val result = HashMap<Int, ArrayList<SpotifyEntity>>()
         // Get all recommended tracks from input blocks
         for (index in outputs.keys)
         {
-            val curResults = ArrayList<SpotifyRequests.SpotifyEntity>()
+            val curResults = ArrayList<SpotifyEntity>()
             for(i in outputs[index]!!)
             {
                 curResults.addAll(blocks[i].output(requests))
             }
-            val curBanned = HashSet<SpotifyRequests.SpotifyEntity>()
+            val curBanned = HashSet<SpotifyEntity>()
             if(bannedOutputs[index] != null)
             {
                 for(i in bannedOutputs[index]!!)
@@ -103,7 +104,7 @@ class ProgramRow(var isLastRow: Boolean)
         // If this is the last row all its blocks need to output to 0
         if (this.isLastRow)
         {
-            val curResults = ArrayList<SpotifyRequests.SpotifyEntity>()
+            val curResults = ArrayList<SpotifyEntity>()
             for(block in blocks)
             {
                 curResults.addAll(block.output(requests))
