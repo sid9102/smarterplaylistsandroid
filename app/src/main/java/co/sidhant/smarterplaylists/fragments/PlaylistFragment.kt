@@ -15,6 +15,9 @@ import co.sidhant.smarterplaylists.spotify.SpotifyRequests
 
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import android.widget.ProgressBar
+
+
 
 /**
  * A fragment representing a list of Items.
@@ -65,22 +68,22 @@ class PlaylistFragment : DialogFragment()
         val view = inflater!!.inflate(R.layout.fragment_playlist_list, container, false)
         val playlists = ArrayList<SpotifyEntity>()
         // Set the adapter
-        if (view is RecyclerView)
-        {
-            val context = view.getContext()
-            val recyclerView = view
-            recyclerView.layoutManager = LinearLayoutManager(context)
-            val adapter = MyPlaylistRecyclerViewAdapter(playlists, mListener)
-            recyclerView.adapter = adapter
+        val context = view.context
+        val recyclerView = view.findViewById<RecyclerView>(R.id.playlists)
+        val spinner = view.findViewById<ProgressBar>(R.id.playlistsLoading)
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        val adapter = MyPlaylistRecyclerViewAdapter(playlists, mListener)
+        recyclerView.adapter = adapter
 
-            doAsync()
+        doAsync()
+        {
+            val requests = SpotifyRequests(mAuthToken)
+            requests.getPlaylistsForCurrentUser(playlists)
+            uiThread()
             {
-                val requests = SpotifyRequests(mAuthToken)
-                requests.getPlaylistsForCurrentUser(playlists)
-                uiThread()
-                {
-                    adapter.notifyDataSetChanged()
-                }
+                recyclerView.visibility = View.VISIBLE
+                adapter.notifyDataSetChanged()
+                spinner.visibility = View.GONE
             }
         }
         return view

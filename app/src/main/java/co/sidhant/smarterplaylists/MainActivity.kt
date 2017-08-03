@@ -35,7 +35,7 @@ class MainActivity : Activity(), Player.NotificationCallback, ConnectionStateCal
         val builder = AuthenticationRequest.Builder(CLIENT_ID,
                 AuthenticationResponse.Type.TOKEN,
                 REDIRECT_URI)
-        builder.setScopes(arrayOf("user-read-private", "streaming"))
+        builder.setScopes(arrayOf("user-read-private", "streaming", "playlist-read-private", "user-top-read"))
         val request = builder.build()
 
         AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request)
