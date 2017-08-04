@@ -44,7 +44,6 @@ class SongFragment : Fragment()
         }
     }
 
-    // TODO: Customize parameters
     private var mAuthToken = ""
     private var mClientID = ""
     private var songs = ArrayList<SpotifySong>()

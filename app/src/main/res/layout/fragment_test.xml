@@ -1,0 +1,18 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="co.sidhant.smarterplaylists.fragments.TestFragment">
+
+    <Button
+        android:id="@+id/songsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show songs"/>
+
+    <Button
+        android:id="@+id/playlistsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show playlists"/>
+</LinearLayout>
