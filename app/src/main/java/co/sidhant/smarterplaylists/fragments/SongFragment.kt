@@ -19,10 +19,6 @@ import co.sidhant.smarterplaylists.spotify.SpotifySong
  * Activities containing this fragment MUST implement the [OnListFragmentInteractionListener]
  * interface.
  */
-/**
- * Mandatory empty constructor for the fragment manager to instantiate the
- * fragment (e.g. upon screen orientation changes).
- */
 class SongFragment : DialogFragment()
 {
     companion object
@@ -68,13 +64,10 @@ class SongFragment : DialogFragment()
         dialog.setTitle("Program Output")
         val view = inflater!!.inflate(R.layout.fragment_song_list, container, false)
         // Set the adapter
-        if (view is RecyclerView)
-        {
-            val context = view.getContext()
-            val recyclerView = view
-            recyclerView.layoutManager = LinearLayoutManager(context)
-            recyclerView.adapter = MySongRecyclerViewAdapter(songs, mListener)
-        }
+        val recyclerView = view.findViewById<RecyclerView>(R.id.songsList)
+        val context = view.getContext()
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = MySongRecyclerViewAdapter(songs, mListener)
         return view
     }
 
@@ -89,6 +82,16 @@ class SongFragment : DialogFragment()
         {
             throw RuntimeException(context!!.toString() + " must implement OnListFragmentInteractionListener")
         }
+    }
+
+    override fun onResume()
+    {
+        // Make this dialog larger
+        val params = dialog.window!!.attributes
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT
+        params.height = ViewGroup.LayoutParams.MATCH_PARENT
+        dialog.window!!.attributes = params
+        super.onResume()
     }
 
     override fun onDetach()

@@ -1,12 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/list"
-    android:name="co.sidhant.smarterplaylists.fragments.SongFragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layoutManager="LinearLayoutManager"
-    tools:context="co.sidhant.smarterplaylists.fragments.SongFragment"
-    tools:listitem="@layout/fragment_song"/>
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.RecyclerView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/songsList"
+        android:name="co.sidhant.smarterplaylists.fragments.SongFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/saveSongsToPlaylistButton"
+        app:layoutManager="LinearLayoutManager"
+        tools:context="co.sidhant.smarterplaylists.fragments.SongFragment"
+        tools:listitem="@layout/fragment_song"/>
+
+    <Button
+        android:id="@+id/saveSongsToPlaylistButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/saveToPlaylist"
+        android:textAlignment="center"/>
+
+</RelativeLayout>
