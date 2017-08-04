@@ -192,15 +192,12 @@ class MainActivity : Activity(),
                     val fragmentTransaction = fragmentManager.beginTransaction()
                     val songFragment = SongFragment.newInstance(accessToken, CLIENT_ID, SpotifySong.dumpSongsToJson(songs))
 
-                    val prevFragment = fragmentManager.findFragmentByTag("dialog")
-                    if (prevFragment != null)
+                    val prevDialog = fragmentManager.findFragmentByTag("dialog")
+                    if (prevDialog != null)
                     {
-                        fragmentTransaction.remove(prevFragment)
+                        fragmentTransaction.remove(prevDialog)
                     }
-
-                    fragmentTransaction.replace(R.id.mainContainer, songFragment)
-                    fragmentTransaction.addToBackStack("song")
-                    fragmentTransaction.commit()
+                    songFragment.show(fragmentTransaction, "dialog")
                 }
             }
         }

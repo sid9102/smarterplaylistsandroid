@@ -1,6 +1,6 @@
 package co.sidhant.smarterplaylists.fragments
 
-import android.app.Fragment
+import android.app.DialogFragment
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -13,7 +13,7 @@ import co.sidhant.smarterplaylists.R
 import co.sidhant.smarterplaylists.spotify.SpotifySong
 
 /**
- * A fragment representing a list of Items.
+ * A dialog that displays the songs produced by a program.
  *
  *
  * Activities containing this fragment MUST implement the [OnListFragmentInteractionListener]
@@ -23,7 +23,7 @@ import co.sidhant.smarterplaylists.spotify.SpotifySong
  * Mandatory empty constructor for the fragment manager to instantiate the
  * fragment (e.g. upon screen orientation changes).
  */
-class SongFragment : Fragment()
+class SongFragment : DialogFragment()
 {
     companion object
     {
@@ -65,6 +65,7 @@ class SongFragment : Fragment()
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View?
     {
+        dialog.setTitle("Program Output")
         val view = inflater!!.inflate(R.layout.fragment_song_list, container, false)
         // Set the adapter
         if (view is RecyclerView)
