@@ -31,6 +31,7 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
 class MainActivity : Activity(),
         Player.NotificationCallback,
         ConnectionStateCallback,
+        PlaylistFragment.OnListFragmentInteractionListener,
         TestFragment.OnTestFragmentCreatedListener
 {
     companion object
@@ -143,6 +144,11 @@ class MainActivity : Activity(),
     override fun onConnectionMessage(message: String)
     {
         Log.d("MainActivity", "Received connection message: " + message)
+    }
+
+    override fun onPlaylistInteraction(item: SpotifyEntity)
+    {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onTestFragmentCreated(songsButton: Button, playlistsButton: Button)

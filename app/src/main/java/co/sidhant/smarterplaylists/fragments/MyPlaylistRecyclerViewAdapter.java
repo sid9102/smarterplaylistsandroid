@@ -10,18 +10,22 @@ import android.widget.TextView;
 import co.sidhant.smarterplaylists.R;
 import co.sidhant.smarterplaylists.spotify.SpotifyEntity;
 import co.sidhant.smarterplaylists.views.PreviewButton;
+import co.sidhant.smarterplaylists.fragments.PlaylistFragment.OnListFragmentInteractionListener;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link SpotifyEntity}.
+ * {@link RecyclerView.Adapter} that can display a {@link SpotifyEntity} and makes a call to the
+ * specified {@link OnListFragmentInteractionListener}.
  */
 public class MyPlaylistRecyclerViewAdapter extends RecyclerView.Adapter<MyPlaylistRecyclerViewAdapter.ViewHolder> {
 
-    private final List<            SpotifyEntity> mValues;
+    private final List<SpotifyEntity> mValues;
+    private final OnListFragmentInteractionListener mListener;
 
-    public MyPlaylistRecyclerViewAdapter(List<SpotifyEntity> items) {
+    public MyPlaylistRecyclerViewAdapter(List<SpotifyEntity> items, OnListFragmentInteractionListener listener) {
         mValues = items;
+        mListener = listener;
     }
 
     @Override
@@ -47,6 +51,17 @@ public class MyPlaylistRecyclerViewAdapter extends RecyclerView.Adapter<MyPlayli
         holder.mItem = mValues.get(position);
         holder.button.entity = holder.mItem;
         holder.mContentView.setText(mValues.get(position).getName());
+
+        holder.mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (null != mListener) {
+                    // Notify the active callbacks interface (the activity, if the
+                    // fragment is attached to one) that an item has been selected.
+                    mListener.onPlaylistInteraction(holder.mItem);
+                }
+            }
+        });
     }
 
     @Override

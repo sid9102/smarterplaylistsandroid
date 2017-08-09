@@ -1,12 +1,10 @@
 package co.sidhant.smarterplaylists.spotify
 
-import android.util.Log
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.beust.klaxon.string
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
 /**
  * Spotify entities
