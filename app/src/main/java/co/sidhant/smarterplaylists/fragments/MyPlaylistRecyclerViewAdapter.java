@@ -4,50 +4,49 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import co.sidhant.smarterplaylists.R;
 import co.sidhant.smarterplaylists.spotify.SpotifyEntity;
-import co.sidhant.smarterplaylists.fragments.PlaylistFragment.OnListFragmentInteractionListener;
+import co.sidhant.smarterplaylists.views.PreviewButton;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link SpotifyEntity} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
+ * {@link RecyclerView.Adapter} that can display a {@link SpotifyEntity}.
  */
 public class MyPlaylistRecyclerViewAdapter extends RecyclerView.Adapter<MyPlaylistRecyclerViewAdapter.ViewHolder> {
 
     private final List<            SpotifyEntity> mValues;
-    private final OnListFragmentInteractionListener mListener;
 
-    public MyPlaylistRecyclerViewAdapter(List<SpotifyEntity> items, OnListFragmentInteractionListener listener) {
+    public MyPlaylistRecyclerViewAdapter(List<SpotifyEntity> items) {
         mValues = items;
-        mListener = listener;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
+        RelativeLayout layout = (RelativeLayout) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_playlist, parent, false);
-        return new ViewHolder(view);
+
+        PreviewButton button = new PreviewButton(parent.getContext());
+        button.initView(new SpotifyEntity("PLACEHOLDER", "PLACEHOLDER"));
+
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.ALIGN_PARENT_END);
+        button.setLayoutParams(params);
+        layout.addView(button);
+
+        ViewHolder holder = new ViewHolder(layout);
+        holder.button = button;
+        return holder;
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
+        holder.button.entity = holder.mItem;
         holder.mContentView.setText(mValues.get(position).getName());
-
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onPlaylistInteraction(holder.mItem);
-                }
-            }
-        });
     }
 
     @Override
@@ -59,6 +58,7 @@ public class MyPlaylistRecyclerViewAdapter extends RecyclerView.Adapter<MyPlayli
         public final View mView;
         public final TextView mContentView;
         public SpotifyEntity mItem;
+        public PreviewButton button;
 
         public ViewHolder(View view) {
             super(view);

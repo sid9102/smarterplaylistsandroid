@@ -16,15 +16,12 @@ import co.sidhant.smarterplaylists.spotify.SpotifyRequests
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import android.widget.ProgressBar
-
+import co.sidhant.smarterplaylists.PlayerManager
 
 
 /**
  * A fragment representing a list of Items.
  *
- *
- * Activities containing this fragment MUST implement the [OnListFragmentInteractionListener]
- * interface.
  */
 class PlaylistFragment : DialogFragment()
 {
@@ -47,7 +44,6 @@ class PlaylistFragment : DialogFragment()
 
     private var mAuthToken = ""
     private var mClientID = ""
-    private var mListener: OnListFragmentInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -72,7 +68,7 @@ class PlaylistFragment : DialogFragment()
         val recyclerView = view.findViewById<RecyclerView>(R.id.playlists)
         val spinner = view.findViewById<ProgressBar>(R.id.playlistsLoading)
         recyclerView.layoutManager = LinearLayoutManager(context)
-        val adapter = MyPlaylistRecyclerViewAdapter(playlists, mListener)
+        val adapter = MyPlaylistRecyclerViewAdapter(playlists)
         recyclerView.adapter = adapter
 
         doAsync()
@@ -89,23 +85,10 @@ class PlaylistFragment : DialogFragment()
         return view
     }
 
-
-    override fun onAttach(context: Context?)
-    {
-        super.onAttach(context)
-        if (context is OnListFragmentInteractionListener)
-        {
-            mListener = context
-        } else
-        {
-            throw RuntimeException(context!!.toString() + " must implement OnListFragmentInteractionListener")
-        }
-    }
-
     override fun onDetach()
     {
+        PlayerManager.stop()
         super.onDetach()
-        mListener = null
     }
 
     override fun onResume()
@@ -116,17 +99,5 @@ class PlaylistFragment : DialogFragment()
         params.height = ViewGroup.LayoutParams.MATCH_PARENT
         dialog.window!!.attributes = params
         super.onResume()
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     */
-    interface OnListFragmentInteractionListener
-    {
-        fun onPlaylistInteraction(item: SpotifyEntity)
     }
 }

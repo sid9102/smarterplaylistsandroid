@@ -71,12 +71,6 @@ class SongFragment : DialogFragment()
         return view
     }
 
-
-    override fun onAttach(context: Context?)
-    {
-        super.onAttach(context)
-    }
-
     override fun onResume()
     {
         // Make this dialog larger

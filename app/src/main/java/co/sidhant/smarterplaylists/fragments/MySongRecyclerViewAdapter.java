@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -30,14 +29,18 @@ public class MySongRecyclerViewAdapter extends RecyclerView.Adapter<MySongRecycl
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RelativeLayout layout = (RelativeLayout) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_song, parent, false);
+
         PreviewButton button = new PreviewButton(parent.getContext());
         button.initView(new SpotifyEntity("PLACEHOLDER", "PLACEHOLDER"));
+
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         params.addRule(RelativeLayout.ALIGN_PARENT_END);
         button.setLayoutParams(params);
         layout.addView(button);
+
         ViewHolder holder = new ViewHolder(layout);
         holder.button = button;
+
         return holder;
     }
 
