@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:layout_margin="10dp"
-              android:clickable="true"
-              android:background="?android:attr/selectableItemBackground"
+              android:clickable="false"
               android:orientation="vertical">
 
     <TextView
-        android:id="@+id/name"
+        android:id="@+id/songName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="1dp"
@@ -25,5 +24,6 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textAppearance="@android:style/TextAppearance.Material.Small"
+        android:layout_below="@+id/songName"
         />
-</LinearLayout>
+</RelativeLayout>

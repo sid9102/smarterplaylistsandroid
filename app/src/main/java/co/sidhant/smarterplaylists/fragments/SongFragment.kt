@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import co.sidhant.smarterplaylists.PlayerManager
 
 import co.sidhant.smarterplaylists.R
 import co.sidhant.smarterplaylists.spotify.SpotifySong
@@ -43,7 +44,6 @@ class SongFragment : DialogFragment()
     private var mAuthToken = ""
     private var mClientID = ""
     private var songs = ArrayList<SpotifySong>()
-    private var mListener: OnListFragmentInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -67,7 +67,7 @@ class SongFragment : DialogFragment()
         val recyclerView = view.findViewById<RecyclerView>(R.id.songsList)
         val context = view.getContext()
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = MySongRecyclerViewAdapter(songs, mListener)
+        recyclerView.adapter = MySongRecyclerViewAdapter(songs)
         return view
     }
 
@@ -75,13 +75,6 @@ class SongFragment : DialogFragment()
     override fun onAttach(context: Context?)
     {
         super.onAttach(context)
-        if (context is OnListFragmentInteractionListener)
-        {
-            mListener = context
-        } else
-        {
-            throw RuntimeException(context!!.toString() + " must implement OnListFragmentInteractionListener")
-        }
     }
 
     override fun onResume()
@@ -96,21 +89,7 @@ class SongFragment : DialogFragment()
 
     override fun onDetach()
     {
+        PlayerManager.stop()
         super.onDetach()
-        mListener = null
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
-     */
-    interface OnListFragmentInteractionListener
-    {
-        fun onSongInteraction(item: SpotifySong)
     }
 }

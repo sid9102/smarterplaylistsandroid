@@ -3,7 +3,6 @@ package co.sidhant.smarterplaylists
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.widget.Button
 
@@ -16,7 +15,6 @@ import com.spotify.sdk.android.player.Error
 import com.spotify.sdk.android.player.Player
 import com.spotify.sdk.android.player.PlayerEvent
 import com.spotify.sdk.android.player.Spotify
-import com.spotify.sdk.android.player.SpotifyPlayer
 
 
 import co.sidhant.smarterplaylists.fragments.PlaylistFragment
@@ -33,8 +31,6 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
 class MainActivity : Activity(),
         Player.NotificationCallback,
         ConnectionStateCallback,
-        PlaylistFragment.OnListFragmentInteractionListener,
-        SongFragment.OnListFragmentInteractionListener,
         TestFragment.OnTestFragmentCreatedListener
 {
     companion object
@@ -48,8 +44,6 @@ class MainActivity : Activity(),
         // Can be any integer
         private val REQUEST_CODE = 1337
     }
-
-    private var mPlayer: Player? = null
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -86,20 +80,7 @@ class MainActivity : Activity(),
             if (response.type == AuthenticationResponse.Type.TOKEN)
             {
                 val playerConfig = Config(this, response.accessToken, CLIENT_ID)
-                Spotify.getPlayer(playerConfig, this, object : SpotifyPlayer.InitializationObserver
-                {
-                    override fun onInitialized(spotifyPlayer: SpotifyPlayer)
-                    {
-                        mPlayer = spotifyPlayer
-                        mPlayer!!.addConnectionStateCallback(this@MainActivity)
-                        mPlayer!!.addNotificationCallback(this@MainActivity)
-                    }
-
-                    override fun onError(throwable: Throwable)
-                    {
-                        Log.e("MainActivity", "Could not initialize player: " + throwable.message)
-                    }
-                })
+                PlayerManager.initializePlayer(playerConfig, this)
             }
         }
     }
@@ -162,20 +143,6 @@ class MainActivity : Activity(),
     override fun onConnectionMessage(message: String)
     {
         Log.d("MainActivity", "Received connection message: " + message)
-    }
-
-    override fun onPlaylistInteraction(item: SpotifyEntity)
-    {
-        mPlayer!!.playUri(null, item.uri, 0, 0)
-        Handler().postDelayed({
-            mPlayer!!.pause(null)
-
-        }, 30000)
-    }
-
-    override fun onSongInteraction(item: SpotifySong)
-    {
-        mPlayer!!.playUri(null, item.uri, 0, 0)
     }
 
     override fun onTestFragmentCreated(songsButton: Button, playlistsButton: Button)
