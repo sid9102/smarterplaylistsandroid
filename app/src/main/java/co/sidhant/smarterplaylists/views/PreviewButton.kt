@@ -68,7 +68,20 @@ class PreviewButton(context: Context) : RelativeLayout(context)
         super.addView(progress)
     }
 
-    fun togglePlaying()
+    fun setProgressMax()
+    {
+        setIconPlay()
+        setProgress(progress.max)
+    }
+
+    fun setProgress(progress: Int)
+    {
+        if (progress != this.progress.max)
+            setIconStop()
+        anim.setProgress(progress)
+    }
+
+    private fun togglePlaying()
     {
         if(icon == R.drawable.play)
             startPlaying()
@@ -76,7 +89,7 @@ class PreviewButton(context: Context) : RelativeLayout(context)
             stopPlaying()
     }
 
-    fun startPlaying()
+    private fun startPlaying()
     {
         playingButton?.stopPlaying()
         playingButton = this
@@ -90,43 +103,28 @@ class PreviewButton(context: Context) : RelativeLayout(context)
                     this@PreviewButton.stopPlaying()
                 }, 30000)
         entity.playing = true
-        toggleIcon()
+        setIconStop()
     }
 
-    fun stopPlaying()
+    private fun stopPlaying()
     {
+        setProgressMax()
+        setIconPlay()
         playingEntity?.playing = false
-        playingButton = null
         playingEntity = null
         PlayerManager.stop()
-        setProgress(3000)
-        toggleIcon()
     }
 
-    fun toggleIcon()
-    {
-        if(icon == R.drawable.play)
-            setIconStop()
-        else
-            setIconPlay()
-    }
-
-    fun setIconPlay()
+    private fun setIconPlay()
     {
         icon = R.drawable.play
         playButton.imageResource = icon
-        setProgress(3000)
     }
 
-    fun setIconStop()
+    private fun setIconStop()
     {
         icon = R.drawable.stop
         playButton.imageResource = icon
-    }
-
-    fun setProgress(progress: Int)
-    {
-        anim.setProgress(progress)
     }
 
     /**

@@ -56,13 +56,11 @@ public class MyPlaylistRecyclerViewAdapter extends RecyclerView.Adapter<MyPlayli
         if(holder.mItem.getPlaying())
         {
             int curPosition = PlayerManager.INSTANCE.getPlayPosition() / 10;
-            holder.button.setIconStop();
             holder.button.setProgress(curPosition);
         }
         else
         {
-            holder.button.setIconPlay();
-            holder.button.setProgress(3000);
+            holder.button.setProgressMax();
         }
 
 //        holder.mView.setOnClickListener(new View.OnClickListener() {
