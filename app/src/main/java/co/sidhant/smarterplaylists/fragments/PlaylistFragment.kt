@@ -64,7 +64,7 @@ class PlaylistFragment : DialogFragment()
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View?
     {
-        dialog.setTitle("Select Playlist")
+        dialog.setTitle("Select a Playlist")
         val view = inflater!!.inflate(R.layout.fragment_playlist_list, container, false)
         val playlists = ArrayList<SpotifyEntity>()
         // Set the adapter

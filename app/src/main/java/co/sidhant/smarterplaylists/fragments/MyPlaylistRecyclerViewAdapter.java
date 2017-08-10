@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import co.sidhant.smarterplaylists.PlayerManager;
 import co.sidhant.smarterplaylists.R;
 import co.sidhant.smarterplaylists.spotify.SpotifyEntity;
 import co.sidhant.smarterplaylists.views.PreviewButton;
@@ -49,19 +50,31 @@ public class MyPlaylistRecyclerViewAdapter extends RecyclerView.Adapter<MyPlayli
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.button.entity = holder.mItem;
         holder.mContentView.setText(mValues.get(position).getName());
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onPlaylistInteraction(holder.mItem);
-                }
-            }
-        });
+        holder.button.entity = holder.mItem;
+        if(holder.mItem.getPlaying())
+        {
+            int curPosition = PlayerManager.INSTANCE.getPlayPosition() / 10;
+            holder.button.setIconStop();
+            holder.button.setProgress(curPosition);
+        }
+        else
+        {
+            holder.button.setIconPlay();
+            holder.button.setProgress(3000);
+        }
+
+//        holder.mView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (null != mListener) {
+//                    // Notify the active callbacks interface (the activity, if the
+//                    // fragment is attached to one) that an item has been selected.
+//                    mListener.onPlaylistInteraction(holder.mItem);
+//                }
+//            }
+//        });
     }
 
     @Override
@@ -69,13 +82,13 @@ public class MyPlaylistRecyclerViewAdapter extends RecyclerView.Adapter<MyPlayli
         return mValues.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public final TextView mContentView;
-        public SpotifyEntity mItem;
-        public PreviewButton button;
+    class ViewHolder extends RecyclerView.ViewHolder {
+        final View mView;
+        final TextView mContentView;
+        SpotifyEntity mItem;
+        PreviewButton button;
 
-        public ViewHolder(View view) {
+        ViewHolder(View view) {
             super(view);
             mView = view;
             mContentView = (TextView) view.findViewById(R.id.playlistName);

@@ -11,6 +11,9 @@ import com.google.gson.Gson
  * Created by sid on 7/26/17.
  */
 open class SpotifyEntity(open var name: String, open var uri: String)
+{
+    open var playing : Boolean = false
+}
 
 class SpotifySong(@Transient override var name: String, @Transient override var uri: String, var artist: String): SpotifyEntity(name, uri)
 {

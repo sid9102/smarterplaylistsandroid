@@ -42,4 +42,10 @@ object PlayerManager
     {
         player!!.pause(null)
     }
+
+    // Returns the current position of the playing track in ms
+    fun getPlayPosition() : Int
+    {
+        return player?.playbackState!!.positionMs.toInt()
+    }
 }
