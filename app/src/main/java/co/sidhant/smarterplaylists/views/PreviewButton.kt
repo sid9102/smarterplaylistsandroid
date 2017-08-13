@@ -2,7 +2,7 @@ package co.sidhant.smarterplaylists.views
 
 import android.content.Context
 import android.graphics.Color
-import android.os.Handler
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ProgressBar
@@ -77,7 +77,10 @@ class PreviewButton(context: Context) : RelativeLayout(context)
     fun setProgress(progress: Int)
     {
         if (progress != this.progress.max)
+        {
+            playingButton = this
             setIconStop()
+        }
         anim.setProgress(progress)
     }
 

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import co.sidhant.smarterplaylists.PlayerManager;
 import co.sidhant.smarterplaylists.R;
 import co.sidhant.smarterplaylists.spotify.SpotifyEntity;
 import co.sidhant.smarterplaylists.spotify.SpotifySong;
@@ -50,6 +51,16 @@ public class MySongRecyclerViewAdapter extends RecyclerView.Adapter<MySongRecycl
         holder.button.entity = holder.mSong;
         holder.mSongNameView.setText(mValues.get(position).getName());
         holder.mArtistView.setText(mValues.get(position).getArtist());
+
+        if(holder.mSong.getPlaying())
+        {
+            int curPosition = PlayerManager.INSTANCE.getPlayPosition() / 10;
+            holder.button.setProgress(curPosition);
+        }
+        else
+        {
+            holder.button.setProgressMax();
+        }
     }
 
     @Override
@@ -57,14 +68,14 @@ public class MySongRecyclerViewAdapter extends RecyclerView.Adapter<MySongRecycl
         return mValues.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public final TextView mSongNameView;
-        public final TextView mArtistView;
-        public SpotifySong mSong;
-        public PreviewButton button;
+    class ViewHolder extends RecyclerView.ViewHolder {
+        final View mView;
+        final TextView mSongNameView;
+        final TextView mArtistView;
+        SpotifySong mSong;
+        PreviewButton button;
 
-        public ViewHolder(View view) {
+        ViewHolder(View view) {
             super(view);
             mView = view;
             mSongNameView = (TextView) view.findViewById(R.id.songName);
