@@ -3,4 +3,6 @@
     <string name="saveToPlaylist">Save Songs To Spotify Playlist…</string>
     <string name="play_button_descriptor">Play button</string>
     <string name="preference_file_key" translatable="false">global_preferences</string>
+    <string name="com_spotify_sdk_redirect_scheme" translatable="false">sidhant</string>
+    <string name="com_spotify_sdk_redirect_host" translatable="false">sidhant.co/spotify/</string>
 </resources>
