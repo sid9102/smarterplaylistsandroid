@@ -30,34 +30,18 @@ class PlaylistFragment : DialogFragment()
 {
     companion object
     {
-
-        const val ARG_AUTH_TOKEN = "auth-token"
-        const val ARG_CLIENT_ID = "client-id"
-
-        fun newInstance(authToken: String, clientID: String): PlaylistFragment
+        fun newInstance(): PlaylistFragment
         {
             val fragment = PlaylistFragment()
-            val args = Bundle()
-            args.putString(ARG_AUTH_TOKEN, authToken)
-            args.putString(ARG_CLIENT_ID, clientID)
-            fragment.arguments = args
             return fragment
         }
     }
 
-    private var mAuthToken = ""
-    private var mClientID = ""
     private var mListener: OnListFragmentInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
-
-        if (arguments != null)
-        {
-            mAuthToken = arguments.getString(ARG_AUTH_TOKEN)
-            mClientID = arguments.getString(ARG_CLIENT_ID)
-        }
         setStyle(DialogFragment.STYLE_NORMAL, this.theme)
     }
 

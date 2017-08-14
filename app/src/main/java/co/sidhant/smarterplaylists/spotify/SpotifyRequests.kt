@@ -12,7 +12,7 @@ import org.jetbrains.anko.info
  */
 object SpotifyRequests: AnkoLogger
 {
-    var authToken: String = ""
+    var accessToken: String = ""
         set(value)
         {
             field = value
@@ -21,7 +21,7 @@ object SpotifyRequests: AnkoLogger
 
     fun getWithAuth(url: String) : Response
     {
-        return httpGet(url, headers = mapOf("Authorization" to "Bearer " + authToken))
+        return httpGet(url, headers = mapOf("Authorization" to "Bearer " + accessToken))
     }
 
     private fun parse(body: String) : Any?

@@ -1,6 +1,7 @@
 package co.sidhant.smarterplaylists
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -39,7 +40,6 @@ class MainActivity : Activity(),
 
         private val CLIENT_ID = "ee7a464c2dc4410e972b78568ddde051"
         private val REDIRECT_URI = "sidhant://sidhant.co/spotify/"
-        private var accessToken = ""
 
         // Request code that will be used to verify if the result comes from correct activity
         // Can be any integer
@@ -50,14 +50,24 @@ class MainActivity : Activity(),
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val sharedPrefs = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+        val accessToken =  sharedPrefs.getString("accessToken", null)
 
-        val builder = AuthenticationRequest.Builder(CLIENT_ID,
-                AuthenticationResponse.Type.TOKEN,
-                REDIRECT_URI)
-        builder.setScopes(arrayOf("user-read-private", "streaming", "playlist-read-private", "user-top-read"))
-        val request = builder.build()
+        if(accessToken == null)
+        {
+            val builder = AuthenticationRequest.Builder(CLIENT_ID,
+                    AuthenticationResponse.Type.TOKEN,
+                    REDIRECT_URI)
+            builder.setScopes(arrayOf("user-read-private", "streaming", "playlist-read-private", "user-top-read"))
+            val request = builder.build()
+            Log.i("BUILDER", request.toUri().toString())
 
-        AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request)
+            AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request)
+        }
+        else
+        {
+            initView(accessToken)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent)
@@ -68,23 +78,32 @@ class MainActivity : Activity(),
         if (requestCode == REQUEST_CODE)
         {
             val response = AuthenticationClient.getResponse(resultCode, intent)
-            val fragmentTransaction = fragmentManager.beginTransaction()
-            val prev = fragmentManager.findFragmentByTag("test")
-            if (prev != null)
-            {
-                fragmentTransaction.remove(prev)
-            }
-            val newFragment = TestFragment.newInstance()
-            fragmentTransaction.add(R.id.mainContainer, newFragment, "test")
-            fragmentTransaction.commit()
-            accessToken = response.accessToken
             if (response.type == AuthenticationResponse.Type.TOKEN)
             {
-                SpotifyRequests.authToken = response.accessToken
-                val playerConfig = Config(this, response.accessToken, CLIENT_ID)
-                PlayerManager.initializePlayer(playerConfig, this)
+                val sharedPrefs = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+                val editor = sharedPrefs.edit()
+                editor.putString("accessToken", response.accessToken)
+                editor.apply()
+                initView(response.accessToken)
             }
         }
+    }
+
+    private fun initView(accessToken: String)
+    {
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        val prev = fragmentManager.findFragmentByTag("test")
+        if (prev != null)
+        {
+            fragmentTransaction.remove(prev)
+        }
+        val newFragment = TestFragment.newInstance()
+        fragmentTransaction.add(R.id.mainContainer, newFragment, "test")
+        fragmentTransaction.commit()
+        SpotifyRequests.accessToken = accessToken
+        val playerConfig = Config(this, accessToken, CLIENT_ID)
+        PlayerManager.initializePlayer(playerConfig, this)
+
     }
 
     override fun onDestroy()
@@ -164,7 +183,7 @@ class MainActivity : Activity(),
                 runOnUiThread()
                 {
                     val fragmentTransaction = fragmentManager.beginTransaction()
-                    val songFragment = SongFragment.newInstance(accessToken, CLIENT_ID, SpotifySong.dumpSongsToJson(songs))
+                    val songFragment = SongFragment.newInstance(SpotifySong.dumpSongsToJson(songs))
 
                     val prevDialog = fragmentManager.findFragmentByTag("dialog")
                     if (prevDialog != null)
@@ -183,7 +202,7 @@ class MainActivity : Activity(),
             {
                 fragmentTransaction.remove(prevDialog)
             }
-            val newDialog = PlaylistFragment.newInstance(accessToken, CLIENT_ID)
+            val newDialog = PlaylistFragment.newInstance()
             newDialog.show(fragmentTransaction, "dialog")
         }
     }

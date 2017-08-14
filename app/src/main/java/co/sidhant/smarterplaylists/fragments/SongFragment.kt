@@ -1,7 +1,6 @@
 package co.sidhant.smarterplaylists.fragments
 
 import android.app.DialogFragment
-import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -24,25 +23,18 @@ class SongFragment : DialogFragment()
 {
     companion object
     {
-
-        const val ARG_AUTH_TOKEN = "auth-token"
-        const val ARG_CLIENT_ID = "client-id"
         const val ARG_SONGS_JSON = "songs-json"
 
-        fun newInstance(authToken: String, clientID: String, songsJson: String): SongFragment
+        fun newInstance(songsJson: String): SongFragment
         {
             val fragment = SongFragment()
             val args = Bundle()
-            args.putString(ARG_AUTH_TOKEN, authToken)
-            args.putString(ARG_CLIENT_ID, clientID)
             args.putString(ARG_SONGS_JSON, songsJson)
             fragment.arguments = args
             return fragment
         }
     }
 
-    private var mAuthToken = ""
-    private var mClientID = ""
     private var songs = ArrayList<SpotifySong>()
 
     override fun onCreate(savedInstanceState: Bundle?)
@@ -51,8 +43,6 @@ class SongFragment : DialogFragment()
 
         if (arguments != null)
         {
-            mAuthToken = arguments.getString(ARG_AUTH_TOKEN)
-            mClientID = arguments.getString(ARG_CLIENT_ID)
             val songsJson = arguments.getString(ARG_SONGS_JSON)
             songs = SpotifySong.importSongsFromJson(songsJson)
         }

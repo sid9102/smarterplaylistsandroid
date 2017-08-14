@@ -1,6 +1,5 @@
 package co.sidhant.smarterplaylists.program.blocks
 
-import co.sidhant.smarterplaylists.spotify.SpotifyRequests
 import co.sidhant.smarterplaylists.spotify.SpotifySong
 
 /**
