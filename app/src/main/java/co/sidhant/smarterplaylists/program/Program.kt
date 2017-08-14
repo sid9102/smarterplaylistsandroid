@@ -51,13 +51,13 @@ class Program(var name: String)
         return false
     }
 
-    fun runProgram(requests: SpotifyRequests): ArrayList<SpotifySong>?
+    fun runProgram(): ArrayList<SpotifySong>?
     {
         var curOutput = HashMap<Int, ArrayList<SpotifySong>>()
         for (row in rows)
         {
             row.input(curOutput)
-            curOutput = row.output(requests)
+            curOutput = row.output()
         }
         val result = curOutput[0]
         return result

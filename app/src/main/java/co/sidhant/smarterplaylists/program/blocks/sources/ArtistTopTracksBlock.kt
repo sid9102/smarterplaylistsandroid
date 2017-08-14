@@ -1,17 +1,17 @@
 package co.sidhant.smarterplaylists.program.blocks.sources
 
-import co.sidhant.smarterplaylists.spotify.SpotifyRequests
 import co.sidhant.smarterplaylists.program.blocks.ProgramBlock
 import co.sidhant.smarterplaylists.spotify.SpotifyEntity
+import co.sidhant.smarterplaylists.spotify.SpotifyRequests
 import co.sidhant.smarterplaylists.spotify.SpotifySong
 
 /**
- * Playlist Source Block
- * Created by sid on 7/26/17.
+ * Gets an artist's top tracks
+ * Created by sid on 8/14/17.
  */
-class PlaylistBlock(playlist: SpotifyEntity) : ProgramBlock
+class ArtistTopTracksBlock(artist: SpotifyEntity) : ProgramBlock
 {
-    override var name: String = playlist.name
+    override var name: String = artist.name
         get() = field
         set(value)
         {
@@ -20,7 +20,7 @@ class PlaylistBlock(playlist: SpotifyEntity) : ProgramBlock
     override val hasInput: Boolean = false
         get() = field
 
-    var playlist: SpotifyEntity = playlist
+    var artist: SpotifyEntity = artist
         get() = field
         set(value)
         {
@@ -30,6 +30,8 @@ class PlaylistBlock(playlist: SpotifyEntity) : ProgramBlock
 
     override fun output(): ArrayList<SpotifySong>
     {
-        return SpotifyRequests.getPlaylistTracks(playlist.uri)
+        // TODO: get accurate country code
+        return SpotifyRequests.getArtistTopTracks(artist, "US")
     }
+
 }

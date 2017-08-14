@@ -77,8 +77,7 @@ class PlaylistFragment : DialogFragment()
 
         doAsync()
         {
-            val requests = SpotifyRequests(mAuthToken)
-            requests.getPlaylistsForCurrentUser(playlists)
+            SpotifyRequests.getPlaylistsForCurrentUser(playlists)
             uiThread()
             {
                 recyclerView.visibility = View.VISIBLE

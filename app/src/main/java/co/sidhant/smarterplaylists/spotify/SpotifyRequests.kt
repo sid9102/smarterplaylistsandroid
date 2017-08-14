@@ -8,19 +8,20 @@ import org.jetbrains.anko.info
 
 /**
  * Created by sid on 7/24/17.
- * Helper for Spotify API requests
+ * Helper singleton for Spotify API requests
  */
-class SpotifyRequests (authToken: String): AnkoLogger
+object SpotifyRequests: AnkoLogger
 {
-    var mAuthToken : String = authToken
-    companion object
-    {
-        const val BASE_URL: String = "https://api.spotify.com/"
-    }
+    var authToken: String = ""
+        set(value)
+        {
+            field = value
+        }
+    const val BASE_URL: String = "https://api.spotify.com/"
 
     fun getWithAuth(url: String) : Response
     {
-        return httpGet(url, headers = mapOf("Authorization" to "Bearer " + mAuthToken))
+        return httpGet(url, headers = mapOf("Authorization" to "Bearer " + authToken))
     }
 
     private fun parse(body: String) : Any?
@@ -95,5 +96,22 @@ class SpotifyRequests (authToken: String): AnkoLogger
                 SpotifyEntity(it.string("name") as String, it.string("uri") as String)
             }
         }
+    }
+
+    fun getUserCountryCode() : String
+    {
+        val r = getWithAuth(BASE_URL + "v1/me")
+        val response = parse(r.text) as JsonObject
+        return response["country"] as String
+    }
+
+
+    fun getArtistTopTracks(artist: SpotifyEntity, countryCode: String) : ArrayList<SpotifySong>
+    {
+        // TODO: finish this
+        val tracks = ArrayList<SpotifySong>()
+        val id = artist.uri
+        var r = getWithAuth(BASE_URL + "v1/artists/{$id}/top-tracks")
+        return tracks
     }
 }

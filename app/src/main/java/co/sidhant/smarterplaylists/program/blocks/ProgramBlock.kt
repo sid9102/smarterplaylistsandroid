@@ -12,6 +12,6 @@ interface ProgramBlock
     var name : String
     val hasInput : Boolean
 
-    fun output(requests: SpotifyRequests) : ArrayList<SpotifySong>
+    fun output() : ArrayList<SpotifySong>
     fun input(input: java.util.ArrayList<SpotifySong>?){}
 }

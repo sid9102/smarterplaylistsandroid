@@ -80,6 +80,7 @@ class MainActivity : Activity(),
             accessToken = response.accessToken
             if (response.type == AuthenticationResponse.Type.TOKEN)
             {
+                SpotifyRequests.authToken = response.accessToken
                 val playerConfig = Config(this, response.accessToken, CLIENT_ID)
                 PlayerManager.initializePlayer(playerConfig, this)
             }
@@ -159,7 +160,7 @@ class MainActivity : Activity(),
             {
                 val program = Program("what")
                 program.addBlock(PlaylistBlock(SpotifyEntity("Twin Peaks", "spotify:user:johnnyjewelspotify:playlist:1CAvNa3OMDeoQX1vhl4jxZ")), 0)
-                val songs = program.runProgram(SpotifyRequests(accessToken)) as ArrayList<SpotifySong>
+                val songs = program.runProgram() as ArrayList<SpotifySong>
                 runOnUiThread()
                 {
                     val fragmentTransaction = fragmentManager.beginTransaction()

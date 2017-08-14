@@ -79,7 +79,7 @@ class ProgramRow(var isLastRow: Boolean)
      * Creates a list of outputs, where key is the index of the block in
      * the next row to output to, and value is the list of songs to output.
      */
-    fun output(requests: SpotifyRequests) : HashMap<Int, ArrayList<SpotifySong>>
+    fun output() : HashMap<Int, ArrayList<SpotifySong>>
     {
         val result = HashMap<Int, ArrayList<SpotifySong>>()
         // Get all recommended tracks from input blocks
@@ -88,14 +88,14 @@ class ProgramRow(var isLastRow: Boolean)
             val curResults = ArrayList<SpotifySong>()
             for(i in outputs[index]!!)
             {
-                curResults.addAll(blocks[i].output(requests))
+                curResults.addAll(blocks[i].output())
             }
             val curBanned = HashSet<SpotifySong>()
             if(bannedOutputs[index] != null)
             {
                 for(i in bannedOutputs[index]!!)
                 {
-                    curBanned.addAll(blocks[i].output(requests))
+                    curBanned.addAll(blocks[i].output())
                 }
                 curResults.filter { entity -> !curBanned.contains(entity) }
             }
@@ -107,7 +107,7 @@ class ProgramRow(var isLastRow: Boolean)
             val curResults = ArrayList<SpotifySong>()
             for(block in blocks)
             {
-                curResults.addAll(block.output(requests))
+                curResults.addAll(block.output())
             }
             result[0] = curResults
         }
