@@ -51,7 +51,7 @@ class MainActivity : Activity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val sharedPrefs = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-        val accessToken =  sharedPrefs.getString("accessToken", null)
+        val accessToken =  null //sharedPrefs.getString("accessToken", null)
 
         if(accessToken == null)
         {
@@ -60,13 +60,11 @@ class MainActivity : Activity(),
                     REDIRECT_URI)
             builder.setScopes(arrayOf("user-read-private", "streaming", "playlist-read-private", "user-top-read"))
             val request = builder.build()
-            Log.i("BUILDER", request.toUri().toString())
-
             AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request)
         }
         else
         {
-            initView(accessToken)
+            initView(accessToken!!)
         }
     }
 
