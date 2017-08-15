@@ -45,7 +45,7 @@ object AuthHelper
 
     fun getNewAccessToken() : String
     {
-        val refreshToken = PrefManager.refreshToken
+        val refreshToken = PrefManager.refreshToken!!
         val payload = mapOf("refresh_token" to refreshToken,
                 "client_id" to client_id,
                 "client_secret" to getClientSecret(),

@@ -53,7 +53,7 @@ class MainActivity : Activity(),
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        spinner = findViewById<ProgressBar>(R.id.mainLoading)
+        spinner = findViewById(R.id.mainLoading)
         PrefManager.sharedPrefs = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
 
         if(PrefManager.isFirstRun())
@@ -99,6 +99,7 @@ class MainActivity : Activity(),
                     val accessToken = AuthHelper.getAccessTokenFromCode(response.code)
                     setAccessToken(accessToken)
                     PrefManager.userCountry = SpotifyRequest.getUserCountryCode()
+                    PrefManager.isUserPremium = SpotifyRequest.isUserPremium()
                     uiThread()
                     {
                         initView()

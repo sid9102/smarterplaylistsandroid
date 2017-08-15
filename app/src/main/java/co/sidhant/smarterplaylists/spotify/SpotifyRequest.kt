@@ -111,12 +111,19 @@ object SpotifyRequest : AnkoLogger
         return response.string("country")!!
     }
 
+    fun isUserPremium() : Boolean
+    {
+        val r = getWithAuth(BASE_URL + "v1/me")
+        val response = parse(r.text)
+        return response.string("product") == "premium"
+    }
+
 
     fun getArtistTopTracks(artist: SpotifyEntity) : ArrayList<SpotifySong>
     {
         val result = ArrayList<SpotifySong>()
         val id = artist.uri
-        val r = getWithAuth(BASE_URL + "v1/artists/{$id}/top-tracks", params = mapOf("country" to PrefManager.userCountry))
+        val r = getWithAuth(BASE_URL + "v1/artists/{$id}/top-tracks", params = mapOf("country" to PrefManager.userCountry!!))
         val tracks = parse(r.text).array<JsonObject>("tracks")
         tracks!!.mapTo(result)
         {

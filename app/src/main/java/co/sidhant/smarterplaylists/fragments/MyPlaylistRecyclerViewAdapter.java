@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import co.sidhant.smarterplaylists.PlayerManager;
+import co.sidhant.smarterplaylists.PrefManager;
 import co.sidhant.smarterplaylists.R;
 import co.sidhant.smarterplaylists.spotify.SpotifyEntity;
 import co.sidhant.smarterplaylists.views.PreviewButton;
@@ -34,13 +35,16 @@ public class MyPlaylistRecyclerViewAdapter extends RecyclerView.Adapter<MyPlayli
         RelativeLayout layout = (RelativeLayout) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_playlist, parent, false);
 
-        PreviewButton button = new PreviewButton(parent.getContext());
-        button.initView(new SpotifyEntity("PLACEHOLDER", "PLACEHOLDER"));
-
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.ALIGN_PARENT_END);
-        button.setLayoutParams(params);
-        layout.addView(button);
+        PreviewButton button = null;
+        if(PrefManager.INSTANCE.isUserPremium())
+        {
+            button = new PreviewButton(parent.getContext());
+            button.initView(new SpotifyEntity("PLACEHOLDER", "PLACEHOLDER"));
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            params.addRule(RelativeLayout.ALIGN_PARENT_END);
+            button.setLayoutParams(params);
+            layout.addView(button);
+        }
 
         ViewHolder holder = new ViewHolder(layout);
         holder.button = button;
@@ -49,18 +53,21 @@ public class MyPlaylistRecyclerViewAdapter extends RecyclerView.Adapter<MyPlayli
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
+        holder.mPlaylist = mValues.get(position);
         holder.mContentView.setText(mValues.get(position).getName());
 
-        holder.button.entity = holder.mItem;
-        if(holder.mItem.getPlaying())
+        if(holder.button != null)
         {
-            int curPosition = PlayerManager.INSTANCE.getPlayPosition() / 10;
-            holder.button.setProgress(curPosition);
-        }
-        else
-        {
-            holder.button.setProgressMax();
+            holder.button.entity = holder.mPlaylist;
+            if (holder.mPlaylist.getPlaying())
+            {
+                int curPosition = PlayerManager.INSTANCE.getPlayPosition() / 10;
+                holder.button.setProgress(curPosition);
+            }
+            else
+            {
+                holder.button.setProgressMax();
+            }
         }
 
 //        holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -69,7 +76,7 @@ public class MyPlaylistRecyclerViewAdapter extends RecyclerView.Adapter<MyPlayli
 //                if (null != mListener) {
 //                    // Notify the active callbacks interface (the activity, if the
 //                    // fragment is attached to one) that an item has been selected.
-//                    mListener.onPlaylistInteraction(holder.mItem);
+//                    mListener.onPlaylistInteraction(holder.mPlaylist);
 //                }
 //            }
 //        });
@@ -83,13 +90,13 @@ public class MyPlaylistRecyclerViewAdapter extends RecyclerView.Adapter<MyPlayli
     class ViewHolder extends RecyclerView.ViewHolder {
         final View mView;
         final TextView mContentView;
-        SpotifyEntity mItem;
+        SpotifyEntity mPlaylist;
         PreviewButton button;
 
         ViewHolder(View view) {
             super(view);
             mView = view;
-            mContentView = (TextView) view.findViewById(R.id.playlistName);
+            mContentView = view.findViewById(R.id.playlistName);
         }
 
         @Override

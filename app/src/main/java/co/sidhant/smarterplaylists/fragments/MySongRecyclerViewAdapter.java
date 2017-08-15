@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import co.sidhant.smarterplaylists.PlayerManager;
+import co.sidhant.smarterplaylists.PrefManager;
 import co.sidhant.smarterplaylists.R;
 import co.sidhant.smarterplaylists.spotify.SpotifyEntity;
 import co.sidhant.smarterplaylists.spotify.SpotifySong;
@@ -31,35 +32,40 @@ public class MySongRecyclerViewAdapter extends RecyclerView.Adapter<MySongRecycl
         RelativeLayout layout = (RelativeLayout) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_song, parent, false);
 
-        PreviewButton button = new PreviewButton(parent.getContext());
-        button.initView(new SpotifyEntity("PLACEHOLDER", "PLACEHOLDER"));
-
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.ALIGN_PARENT_END);
-        button.setLayoutParams(params);
-        layout.addView(button);
+        PreviewButton button = null;
+        if(PrefManager.INSTANCE.isUserPremium())
+        {
+            button = new PreviewButton(parent.getContext());
+            button.initView(new SpotifyEntity("PLACEHOLDER", "PLACEHOLDER"));
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            params.addRule(RelativeLayout.ALIGN_PARENT_END);
+            button.setLayoutParams(params);
+            layout.addView(button);
+        }
 
         ViewHolder holder = new ViewHolder(layout);
         holder.button = button;
-
         return holder;
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mSong = mValues.get(position);
-        holder.button.entity = holder.mSong;
         holder.mSongNameView.setText(mValues.get(position).getName());
         holder.mArtistView.setText(mValues.get(position).getArtist());
 
-        if(holder.mSong.getPlaying())
+        if(holder.button != null)
         {
-            int curPosition = PlayerManager.INSTANCE.getPlayPosition() / 10;
-            holder.button.setProgress(curPosition);
-        }
-        else
-        {
-            holder.button.setProgressMax();
+            holder.button.entity = holder.mSong;
+            if (holder.mSong.getPlaying())
+            {
+                int curPosition = PlayerManager.INSTANCE.getPlayPosition() / 10;
+                holder.button.setProgress(curPosition);
+            }
+            else
+            {
+                holder.button.setProgressMax();
+            }
         }
     }
 
@@ -78,8 +84,8 @@ public class MySongRecyclerViewAdapter extends RecyclerView.Adapter<MySongRecycl
         ViewHolder(View view) {
             super(view);
             mView = view;
-            mSongNameView = (TextView) view.findViewById(R.id.songName);
-            mArtistView = (TextView) view.findViewById(R.id.artist);
+            mSongNameView = view.findViewById(R.id.songName);
+            mArtistView = view.findViewById(R.id.artist);
         }
 
         @Override
