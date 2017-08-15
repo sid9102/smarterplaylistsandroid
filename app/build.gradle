@@ -47,7 +47,9 @@ dependencies {
 
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     compile 'com.google.code.gson:gson:2.8.1'
-    compile 'com.github.jkcclemens:khttp:0.1.0'
+    compile ('com.github.jkcclemens:khttp:0.1.0') {
+        exclude group: 'org.json', module: 'json'
+    }
     compile 'com.beust:klaxon:0.30'
     compile 'org.jetbrains.anko:anko:0.10.1'
     compile 'com.spotify.sdk:spotify-auth:sid9102@aar'
