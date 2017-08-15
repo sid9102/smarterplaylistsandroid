@@ -65,10 +65,17 @@ class MainActivity : Activity(),
             doAsync()
             {
                 val accessToken = AuthHelper.getNewAccessToken()
-                setAccessToken(accessToken)
-                uiThread()
+                if(accessToken == null)
                 {
-                    initView()
+                    onFirstRun()
+                }
+                else
+                {
+                    setAccessToken(accessToken)
+                    uiThread()
+                    {
+                        initView()
+                    }
                 }
             }
         }

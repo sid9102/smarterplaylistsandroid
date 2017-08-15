@@ -23,7 +23,7 @@ object SpotifyRequest : AnkoLogger
         if(r.statusCode == 401)
         {
             // Access code needs to be refreshed
-            accessToken = AuthHelper.getNewAccessToken()
+            accessToken = AuthHelper.getNewAccessToken()!!
             r = httpGet(url, headers = mapOf("Authorization" to "Bearer $accessToken"), params = params)
             Log.i("SpotifyRequest", "Got new accessToken")
         }

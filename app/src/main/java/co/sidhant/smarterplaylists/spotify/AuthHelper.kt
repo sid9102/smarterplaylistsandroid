@@ -43,7 +43,7 @@ object AuthHelper
         return accessToken
     }
 
-    fun getNewAccessToken() : String
+    fun getNewAccessToken() : String?
     {
         val refreshToken = PrefManager.refreshToken!!
         val payload = mapOf("refresh_token" to refreshToken,
@@ -53,7 +53,11 @@ object AuthHelper
         val url = "https://accounts.spotify.com/api/token"
         val r = httpPost(url, params = payload)
         val response = parse(r.text)
-        val accessToken = response.string("access_token")!!
+        val accessToken = response.string("access_token")
+        if(accessToken == null)
+        {
+            PrefManager.resetLogin()
+        }
         return accessToken
     }
 }

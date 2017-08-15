@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Smarter Playlists For Spotify</string>
+    <string name="app_name">Recipes For Spotify</string>
     <string name="saveToPlaylist">Save Songs To Spotify Playlist…</string>
     <string name="play_button_descriptor">Play button</string>
     <string name="preference_file_key" translatable="false">global_preferences</string>

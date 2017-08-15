@@ -66,4 +66,11 @@ object PrefManager
         val result = this.refreshToken == null || this.userCountry == null
         return result
     }
+
+    // In case AuthHelper is unable to get a valid access token
+    fun resetLogin()
+    {
+        sharedPrefs.edit().remove(REFRESH_TOKEN_KEY).apply()
+        this._refreshToken = null
+    }
 }
