@@ -1,5 +1,7 @@
 package co.sidhant.smarterplaylists.spotify
 
+import android.util.Log
+import co.sidhant.smarterplaylists.PrefManager
 import com.beust.klaxon.*
 import khttp.responses.Response
 import khttp.get as httpGet
@@ -15,15 +17,23 @@ object SpotifyRequest : AnkoLogger
     lateinit var accessToken: String
     const val BASE_URL: String = "https://api.spotify.com/"
 
-    fun getWithAuth(url: String) : Response
+    private fun getWithAuth(url: String, params: Map<String, String> = mapOf()) : Response
     {
-        return httpGet(url, headers = mapOf("Authorization" to "Bearer " + accessToken))
+        var r = httpGet(url, headers = mapOf("Authorization" to "Bearer $accessToken"), params = params)
+        if(r.statusCode == 401)
+        {
+            // Access code needs to be refreshed
+            accessToken = AuthHelper.getNewAccessToken()
+            r = httpGet(url, headers = mapOf("Authorization" to "Bearer $accessToken"), params = params)
+            Log.i("SpotifyRequest", "Got new accessToken")
+        }
+        return r
     }
 
     private fun parse(body: String) : JsonObject
     {
-        val parser: Parser = Parser()
-        val stringBuilder: StringBuilder = StringBuilder(body)
+        val parser = Parser()
+        val stringBuilder = StringBuilder(body)
         return parser.parse(stringBuilder) as JsonObject
     }
 
@@ -102,12 +112,18 @@ object SpotifyRequest : AnkoLogger
     }
 
 
-    fun getArtistTopTracks(artist: SpotifyEntity, countryCode: String) : ArrayList<SpotifySong>
+    fun getArtistTopTracks(artist: SpotifyEntity) : ArrayList<SpotifySong>
     {
-        // TODO: finish this
-        val tracks = ArrayList<SpotifySong>()
+        val result = ArrayList<SpotifySong>()
         val id = artist.uri
-        var r = getWithAuth(BASE_URL + "v1/artists/{$id}/top-tracks")
-        return tracks
+        val r = getWithAuth(BASE_URL + "v1/artists/{$id}/top-tracks", params = mapOf("country" to PrefManager.userCountry))
+        val tracks = parse(r.text).array<JsonObject>("tracks")
+        tracks!!.mapTo(result)
+        {
+            SpotifySong(it.obj("track")!!.string("name") as String,
+                    it.obj("track")!!.string("uri") as String,
+                    artist.name)
+        }
+        return result
     }
 }

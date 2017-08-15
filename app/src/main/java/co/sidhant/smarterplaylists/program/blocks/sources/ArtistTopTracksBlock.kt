@@ -30,8 +30,7 @@ class ArtistTopTracksBlock(artist: SpotifyEntity) : ProgramBlock
 
     override fun output(): ArrayList<SpotifySong>
     {
-        // TODO: get accurate country code
-        return SpotifyRequest.getArtistTopTracks(artist, "US")
+        return SpotifyRequest.getArtistTopTracks(artist)
     }
 
 }

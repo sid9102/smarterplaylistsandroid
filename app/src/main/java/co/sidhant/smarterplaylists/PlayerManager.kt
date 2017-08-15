@@ -15,8 +15,9 @@ object PlayerManager
 {
     private lateinit var player: Player
 
-    fun initializePlayer(playerConfig : Config, mainActivity: MainActivity)
+    fun initializePlayer(accessToken: String, clientID: String, mainActivity: MainActivity)
     {
+        val playerConfig = Config(mainActivity, accessToken, clientID)
         Spotify.getPlayer(playerConfig, this, object : SpotifyPlayer.InitializationObserver
         {
             override fun onInitialized(spotifyPlayer: SpotifyPlayer)

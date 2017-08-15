@@ -12,7 +12,6 @@ import android.widget.ProgressBar
 import com.spotify.sdk.android.authentication.AuthenticationClient
 import com.spotify.sdk.android.authentication.AuthenticationRequest
 import com.spotify.sdk.android.authentication.AuthenticationResponse
-import com.spotify.sdk.android.player.Config
 import com.spotify.sdk.android.player.ConnectionStateCallback
 import com.spotify.sdk.android.player.Error
 import com.spotify.sdk.android.player.Player
@@ -42,7 +41,6 @@ class MainActivity : Activity(),
     private var spinner : ProgressBar? = null
     companion object
     {
-        val refreshTokenKey = "refreshToken"
         private val CLIENT_ID = "ee7a464c2dc4410e972b78568ddde051"
         private val REDIRECT_URI = "sidhant://sidhant.co/spotify/"
 
@@ -56,29 +54,34 @@ class MainActivity : Activity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         spinner = findViewById<ProgressBar>(R.id.mainLoading)
-        val sharedPrefs = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-        val refreshToken =  sharedPrefs.getString(refreshTokenKey, null)
+        PrefManager.sharedPrefs = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
 
-        if(refreshToken == null)
+        if(PrefManager.isFirstRun())
         {
-            val builder = AuthenticationRequest.Builder(CLIENT_ID,
-                    AuthenticationResponse.Type.CODE,
-                    REDIRECT_URI)
-            builder.setScopes(arrayOf("user-read-private", "streaming", "playlist-read-private", "user-top-read"))
-            val request = builder.build()
-            AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request)
+            onFirstRun()
         }
         else
         {
             doAsync()
             {
-                val accessToken = AuthHelper.getNewAccessToken(refreshToken, sharedPrefs)
+                val accessToken = AuthHelper.getNewAccessToken()
+                setAccessToken(accessToken)
                 uiThread()
                 {
-                    initView(accessToken)
+                    initView()
                 }
             }
         }
+    }
+
+    private fun onFirstRun()
+    {
+        val builder = AuthenticationRequest.Builder(CLIENT_ID,
+                AuthenticationResponse.Type.CODE,
+                REDIRECT_URI)
+        builder.setScopes(arrayOf("user-read-private", "streaming", "playlist-read-private", "user-top-read"))
+        val request = builder.build()
+        AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent)
@@ -91,20 +94,21 @@ class MainActivity : Activity(),
             val response = AuthenticationClient.getResponse(resultCode, intent)
             if (response.type == AuthenticationResponse.Type.CODE)
             {
-                val sharedPrefs = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
                 doAsync()
                 {
-                    val accessToken = AuthHelper.getAccessTokenFromCode(response.code, sharedPrefs)
+                    val accessToken = AuthHelper.getAccessTokenFromCode(response.code)
+                    setAccessToken(accessToken)
+                    PrefManager.userCountry = SpotifyRequest.getUserCountryCode()
                     uiThread()
                     {
-                        initView(accessToken)
+                        initView()
                     }
                 }
             }
         }
     }
 
-    private fun initView(accessToken: String)
+    private fun initView()
     {
         spinner!!.visibility = View.GONE
         val fragmentTransaction = fragmentManager.beginTransaction()
@@ -116,16 +120,12 @@ class MainActivity : Activity(),
         val newFragment = TestFragment.newInstance()
         fragmentTransaction.add(R.id.mainContainer, newFragment, "test")
         fragmentTransaction.commit()
-        SpotifyRequest.accessToken = accessToken
-        val playerConfig = Config(this, accessToken, CLIENT_ID)
-        PlayerManager.initializePlayer(playerConfig, this)
     }
 
-    private fun updateAccessToken(accessToken: String)
+    private fun setAccessToken(accessToken: String)
     {
         SpotifyRequest.accessToken = accessToken
-        val playerConfig = Config(this, accessToken, CLIENT_ID)
-        PlayerManager.initializePlayer(playerConfig, this)
+        PlayerManager.initializePlayer(accessToken, CLIENT_ID, this)
     }
 
     override fun onDestroy()
