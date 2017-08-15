@@ -10,13 +10,9 @@ import org.jetbrains.anko.info
  * Created by sid on 7/24/17.
  * Helper singleton for Spotify API requests
  */
-object SpotifyRequests: AnkoLogger
+object SpotifyRequest : AnkoLogger
 {
-    var accessToken: String = ""
-        set(value)
-        {
-            field = value
-        }
+    lateinit var accessToken: String
     const val BASE_URL: String = "https://api.spotify.com/"
 
     fun getWithAuth(url: String) : Response
@@ -24,7 +20,7 @@ object SpotifyRequests: AnkoLogger
         return httpGet(url, headers = mapOf("Authorization" to "Bearer " + accessToken))
     }
 
-    private fun parse(body: String) : Any?
+    private fun parse(body: String) : JsonObject
     {
         val parser: Parser = Parser()
         val stringBuilder: StringBuilder = StringBuilder(body)
@@ -39,7 +35,7 @@ object SpotifyRequests: AnkoLogger
             val parts = uri.split(":")
             val url = BASE_URL + "v1/users/" + parts[2] + "/playlists/" + parts[4]
             val r = getWithAuth(url)
-            result = (parse(r.text) as JsonObject).string("name") as String
+            result = parse(r.text).string("name") as String
         }
         else
         {
@@ -66,7 +62,7 @@ object SpotifyRequests: AnkoLogger
         val parts = uri.split(":")
         val url = BASE_URL + "v1/users/" + parts[2] + "/playlists/" + parts[4]
         val r = getWithAuth(url)
-        val playlist = (parse(r.text) as JsonObject).obj("tracks")!!.array<JsonObject>("items")
+        val playlist = parse(r.text).obj("tracks")!!.array<JsonObject>("items")
         playlist!!.mapTo(result)
         {
             SpotifySong(it.obj("track")!!.string("name") as String,
@@ -82,7 +78,7 @@ object SpotifyRequests: AnkoLogger
         // Spotify only gives us 20 playlists by default, we want to get the maximum 150
         val limitRegex = Regex("limit=\\d+")
         val offsetRegex = Regex("offset=\\d+")
-        var newURL = (parse(r.text) as JsonObject).string("href") as String
+        var newURL = parse(r.text).string("href") as String
         newURL = limitRegex.replace(newURL, "limit=50")
         for(i in 0..2)
         {
@@ -90,7 +86,7 @@ object SpotifyRequests: AnkoLogger
             newURL = offsetRegex.replace(newURL, "offset=" + curOffset.toString())
             info("Getting playlists from URL: " + newURL)
             r = getWithAuth(newURL)
-            val playlistJson = parse(r.text) as JsonObject
+            val playlistJson = parse(r.text)
             playlistJson.array<JsonObject>("items")!!.mapTo(playlists)
             {
                 SpotifyEntity(it.string("name") as String, it.string("uri") as String)
@@ -101,8 +97,8 @@ object SpotifyRequests: AnkoLogger
     fun getUserCountryCode() : String
     {
         val r = getWithAuth(BASE_URL + "v1/me")
-        val response = parse(r.text) as JsonObject
-        return response["country"] as String
+        val response = parse(r.text)
+        return response.string("country")!!
     }
 
 

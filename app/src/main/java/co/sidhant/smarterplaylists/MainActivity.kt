@@ -5,7 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
+import android.widget.ProgressBar
 
 import com.spotify.sdk.android.authentication.AuthenticationClient
 import com.spotify.sdk.android.authentication.AuthenticationRequest
@@ -23,11 +25,13 @@ import co.sidhant.smarterplaylists.fragments.SongFragment
 import co.sidhant.smarterplaylists.fragments.TestFragment
 import co.sidhant.smarterplaylists.program.Program
 import co.sidhant.smarterplaylists.program.blocks.sources.PlaylistBlock
+import co.sidhant.smarterplaylists.spotify.AuthHelper
 import co.sidhant.smarterplaylists.spotify.SpotifyEntity
-import co.sidhant.smarterplaylists.spotify.SpotifyRequests
+import co.sidhant.smarterplaylists.spotify.SpotifyRequest
 import co.sidhant.smarterplaylists.spotify.SpotifySong
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import org.jetbrains.anko.uiThread
 
 class MainActivity : Activity(),
         Player.NotificationCallback,
@@ -35,9 +39,10 @@ class MainActivity : Activity(),
         PlaylistFragment.OnListFragmentInteractionListener,
         TestFragment.OnTestFragmentCreatedListener
 {
+    private var spinner : ProgressBar? = null
     companion object
     {
-
+        val refreshTokenKey = "refreshToken"
         private val CLIENT_ID = "ee7a464c2dc4410e972b78568ddde051"
         private val REDIRECT_URI = "sidhant://sidhant.co/spotify/"
 
@@ -50,13 +55,14 @@ class MainActivity : Activity(),
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        spinner = findViewById<ProgressBar>(R.id.mainLoading)
         val sharedPrefs = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-        val accessToken =  null //sharedPrefs.getString("accessToken", null)
+        val refreshToken =  sharedPrefs.getString(refreshTokenKey, null)
 
-        if(accessToken == null)
+        if(refreshToken == null)
         {
             val builder = AuthenticationRequest.Builder(CLIENT_ID,
-                    AuthenticationResponse.Type.TOKEN,
+                    AuthenticationResponse.Type.CODE,
                     REDIRECT_URI)
             builder.setScopes(arrayOf("user-read-private", "streaming", "playlist-read-private", "user-top-read"))
             val request = builder.build()
@@ -64,7 +70,14 @@ class MainActivity : Activity(),
         }
         else
         {
-            initView(accessToken!!)
+            doAsync()
+            {
+                val accessToken = AuthHelper.getNewAccessToken(refreshToken, sharedPrefs)
+                uiThread()
+                {
+                    initView(accessToken)
+                }
+            }
         }
     }
 
@@ -76,19 +89,24 @@ class MainActivity : Activity(),
         if (requestCode == REQUEST_CODE)
         {
             val response = AuthenticationClient.getResponse(resultCode, intent)
-            if (response.type == AuthenticationResponse.Type.TOKEN)
+            if (response.type == AuthenticationResponse.Type.CODE)
             {
                 val sharedPrefs = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-                val editor = sharedPrefs.edit()
-                editor.putString("accessToken", response.accessToken)
-                editor.apply()
-                initView(response.accessToken)
+                doAsync()
+                {
+                    val accessToken = AuthHelper.getAccessTokenFromCode(response.code, sharedPrefs)
+                    uiThread()
+                    {
+                        initView(accessToken)
+                    }
+                }
             }
         }
     }
 
     private fun initView(accessToken: String)
     {
+        spinner!!.visibility = View.GONE
         val fragmentTransaction = fragmentManager.beginTransaction()
         val prev = fragmentManager.findFragmentByTag("test")
         if (prev != null)
@@ -98,10 +116,16 @@ class MainActivity : Activity(),
         val newFragment = TestFragment.newInstance()
         fragmentTransaction.add(R.id.mainContainer, newFragment, "test")
         fragmentTransaction.commit()
-        SpotifyRequests.accessToken = accessToken
+        SpotifyRequest.accessToken = accessToken
         val playerConfig = Config(this, accessToken, CLIENT_ID)
         PlayerManager.initializePlayer(playerConfig, this)
+    }
 
+    private fun updateAccessToken(accessToken: String)
+    {
+        SpotifyRequest.accessToken = accessToken
+        val playerConfig = Config(this, accessToken, CLIENT_ID)
+        PlayerManager.initializePlayer(playerConfig, this)
     }
 
     override fun onDestroy()

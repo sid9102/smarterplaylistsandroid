@@ -2,7 +2,7 @@ package co.sidhant.smarterplaylists.program.blocks.sources
 
 import co.sidhant.smarterplaylists.program.blocks.ProgramBlock
 import co.sidhant.smarterplaylists.spotify.SpotifyEntity
-import co.sidhant.smarterplaylists.spotify.SpotifyRequests
+import co.sidhant.smarterplaylists.spotify.SpotifyRequest
 import co.sidhant.smarterplaylists.spotify.SpotifySong
 
 /**
@@ -31,7 +31,7 @@ class ArtistTopTracksBlock(artist: SpotifyEntity) : ProgramBlock
     override fun output(): ArrayList<SpotifySong>
     {
         // TODO: get accurate country code
-        return SpotifyRequests.getArtistTopTracks(artist, "US")
+        return SpotifyRequest.getArtistTopTracks(artist, "US")
     }
 
 }

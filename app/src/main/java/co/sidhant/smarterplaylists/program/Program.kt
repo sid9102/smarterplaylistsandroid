@@ -1,8 +1,6 @@
 package co.sidhant.smarterplaylists.program
 
-import co.sidhant.smarterplaylists.spotify.SpotifyRequests
 import co.sidhant.smarterplaylists.program.blocks.ProgramBlock
-import co.sidhant.smarterplaylists.spotify.SpotifyEntity
 import co.sidhant.smarterplaylists.spotify.SpotifySong
 import com.google.gson.Gson
 

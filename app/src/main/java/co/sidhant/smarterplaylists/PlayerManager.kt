@@ -13,7 +13,7 @@ import com.spotify.sdk.android.player.SpotifyPlayer
  */
 object PlayerManager
 {
-    private var player: Player? = null
+    private lateinit var player: Player
 
     fun initializePlayer(playerConfig : Config, mainActivity: MainActivity)
     {
@@ -22,8 +22,8 @@ object PlayerManager
             override fun onInitialized(spotifyPlayer: SpotifyPlayer)
             {
                 player = spotifyPlayer
-                player!!.addConnectionStateCallback(mainActivity)
-                player!!.addNotificationCallback(mainActivity)
+                player.addConnectionStateCallback(mainActivity)
+                player.addNotificationCallback(mainActivity)
             }
 
             override fun onError(throwable: Throwable)
@@ -35,17 +35,17 @@ object PlayerManager
 
     fun play(entity: SpotifyEntity)
     {
-        player!!.playUri(null, entity.uri, 0, 0)
+        player.playUri(null, entity.uri, 0, 0)
     }
 
     fun stop()
     {
-        player!!.pause(null)
+        player.pause(null)
     }
 
     // Returns the current position of the playing track in ms
     fun getPlayPosition() : Int
     {
-        return player?.playbackState!!.positionMs.toInt()
+        return player.playbackState!!.positionMs.toInt()
     }
 }

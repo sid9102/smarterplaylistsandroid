@@ -10,7 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import co.sidhant.smarterplaylists.R
 import co.sidhant.smarterplaylists.spotify.SpotifyEntity
-import co.sidhant.smarterplaylists.spotify.SpotifyRequests
+import co.sidhant.smarterplaylists.spotify.SpotifyRequest
 
 
 import org.jetbrains.anko.doAsync
@@ -61,7 +61,7 @@ class PlaylistFragment : DialogFragment()
 
         doAsync()
         {
-            SpotifyRequests.getPlaylistsForCurrentUser(playlists)
+            SpotifyRequest.getPlaylistsForCurrentUser(playlists)
             uiThread()
             {
                 recyclerView.visibility = View.VISIBLE
